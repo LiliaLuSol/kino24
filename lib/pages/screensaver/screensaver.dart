@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kino24/other/app_export.dart';
-import 'bloc/screensaver_bloc.dart';
-import 'models/screensaver_model.dart';
 
 class Screensaver extends StatelessWidget {
   const Screensaver({Key? key}) : super(key: key);
-
-  static Widget builder(BuildContext context) {
-    return BlocProvider<ScreensaverBloc>(
-        create: (context) => ScreensaverBloc(
-            ScreensaverState(screensaverModelObj: ScreensaverModel()))
-          ..add(ScreensaverInitialEvent()),
-        child: Screensaver());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +27,11 @@ class Screensaver extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "lbl7".tr,
+                          text: "Кино",
                           style: CustomTextStyles.headlineLargeWhiteExtraBold32,
                         ),
                         TextSpan(
-                          text: "lbl_24".tr,
+                          text: "24",
                           style:
                               CustomTextStyles.headlineLargeOrangeExtraBold32,
                         ),

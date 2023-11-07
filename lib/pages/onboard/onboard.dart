@@ -1,34 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kino24/other/app_export.dart';
+import 'package:kino24/blocs/Auth/bloc/authentication_bloc.dart';
 import 'package:kino24/widgets/custom_elevated_button.dart';
-import 'bloc/onboard_bloc.dart';
-import 'models/onboard_model.dart';
 import 'package:page_view_indicators/page_view_indicators.dart';
 
-class Onboard extends StatelessWidget {
-  Onboard({Key? key})
-      : super(
-          key: key,
-        );
+class Onboard extends StatefulWidget {
+  const Onboard({super.key});
 
-  static Widget builder(BuildContext context) {
-    return BlocProvider<OnboardBloc>(
-      create: (context) => OnboardBloc(OnboardState(
-        onboardModelObj: OnboardModel(),
-      ))
-        ..add(OnboardInitialEvent()),
-      child: Onboard(),
-    );
-  }
+  @override
+  State<Onboard> createState() => _OnboardState();
+}
+
+class _OnboardState extends State<Onboard> {
+
 
   final PageController pageController = PageController();
   final _currentPageNotifier = ValueNotifier<int>(0);
 
   final List<Widget> pages = [
-    OnboardPage(title1: "msg1".tr,title2:"lbl_24".tr,message:"msg2".tr),
-    OnboardPage(title1: "msg3".tr,title2:"msg4".tr,message:"msg5".tr),
-    OnboardPage(title1: "msg6".tr,title2:"msg7".tr,message:"msg8".tr),
+    OnboardPage(
+        title1: "Добро пожаловать в Кино", title2: "24", message: "Вы сможете наслаждаться кинематографическими шедеврами в любое время!", size: 38.v),
+    OnboardPage(
+        title1: "Никаких ", title2: "очередей", message: "Авторизуйтесь, чтобы покупать билеты без лишних усилий в несколько нажатий!", size: 82.v),
+    OnboardPage(
+        title1: "В бар ", title2: "заранее", message: "Закажи еду и напитки вместе с билетом и забери свежий заказ перед началом сеансом!", size: 82.v),
   ];
 
   int currentPageIndex = 0;
@@ -50,10 +45,19 @@ class Onboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
-
-    return BlocBuilder<OnboardBloc, OnboardState>(
-      builder: (context, state) {
-        return SafeArea(
+    return
+      BlocListener<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          if (state is AuthSuccessState) {
+            GoRouter.of(context).go(AppRoutes.homepage);
+          } else if (state is UnAuthenticatedState) {
+            GoRouter.of(context).go(AppRoutes.onboard);
+          } else if (state is AuthErrorState) {
+            context.showsnackbar(title: 'Что-то пошло не так!');
+          }
+        },
+        child:
+        SafeArea(
           child: Scaffold(
             extendBody: true,
             extendBodyBehindAppBar: true,
@@ -101,7 +105,6 @@ class Onboard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    //SizedBox(height: 56.v),
                     Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 16.h,
@@ -127,21 +130,16 @@ class Onboard extends StatelessWidget {
                                             curve: Curves.ease);
                                       }
                                     } else {
-                                      NavigatorService.pushNamed(
-                                        AppRoutes.authReg,
-                                      );
+                                      GoRouter.of(context).push(AppRoutes.authReg);
                                     }
                                   });
                             })),
-                    // Spacer(flex: 1),
                   ],
                 ),
               ),
             ),
           ),
-        );
-      },
-    );
+        ));
   }
 }
 
@@ -149,8 +147,13 @@ class OnboardPage extends StatelessWidget {
   final String title1;
   final String title2;
   final String message;
+  final double size;
 
-  OnboardPage({required this.title1,required this.title2, required this.message});
+  OnboardPage(
+      {required this.title1,
+      required this.title2,
+      required this.message,
+      required this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +185,7 @@ class OnboardPage extends StatelessWidget {
           width: 353.h,
           margin: EdgeInsets.only(
             left: 5.h,
-            top: 82.v,
+            top: size,
             right: 3.h,
           ),
           child: Text(

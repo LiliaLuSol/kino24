@@ -223,6 +223,7 @@ class PrimaryColors {
   // Black
   Color get black => Color(0XFF000000);
   Color get blackBack => Color(0XFF121212);
+  Color get blackBackP80 => Color(0XCC121212);
 
   // White
   Color get white => Color(0XFFFFFFFF);
@@ -232,6 +233,8 @@ class PrimaryColors {
   Color get orangeP20 => Color(0X33FF5733);
 
   Color get whiteP70 => Color(0XB3FFFFFF);
+  Color get greenP80 => Color(0XCC49A21E);
+  Color get bluelightP80 => Color(0XCC3498DB);
 
   // BlueGray
   Color get blueGray100 => Color(0XFFD9D9D9);

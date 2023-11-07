@@ -14,6 +14,9 @@ class CustomCheckboxButton extends StatelessWidget {
     this.width,
     this.margin,
     this.padding,
+    required this.checkColor,
+    this.fillColor = Colors.white,
+    this.borderColor = Colors.white,
     this.textStyle,
     this.textAlignment,
     this.isExpandedText = false,
@@ -46,6 +49,12 @@ class CustomCheckboxButton extends StatelessWidget {
   final TextAlign? textAlignment;
 
   final bool isExpandedText;
+
+  final Color checkColor;
+
+  final Color fillColor;
+
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -97,14 +106,20 @@ class CustomCheckboxButton extends StatelessWidget {
         height: iconSize ?? 28.h,
         width: iconSize ?? 28.h,
         child: Checkbox(
-          visualDensity: VisualDensity(
-            vertical: -4,
-            horizontal: -4,
-          ),
+          // visualDensity: VisualDensity(
+          //   vertical: -4,
+          //   horizontal: -4,
+          // ),
+          visualDensity: VisualDensity.comfortable,
           value: value ?? false,
           onChanged: (value) {
             onChange(value!);
           },
+          checkColor: checkColor,
+          fillColor: MaterialStateProperty.resolveWith((states) => fillColor),
+          side: BorderSide(
+            color: borderColor,
+          ),
         ),
       );
 }

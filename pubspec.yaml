@@ -24,6 +24,17 @@ dependencies:
   supabase_flutter: ^1.10.3
   flutter_native_splash: ^2.3.4
   page_view_indicators: ^2.0.0
+  bloc_concurrency: ^0.2.0
+  go_router: ^6.0.1
+  font_awesome_flutter: ^10.2.1
+  get_it: ^7.2.0
+  dio: ^4.0.6
+  sizer: ^2.0.15
+  internet_connection_checker: ^1.0.0+1
+  google_sign_in: ^6.1.5
+  url_launcher: ^6.2.1
+  flutter_inappwebview: ^5.8.0
+  youtube_player_flutter: ^8.0.0
 
   cupertino_icons: ^1.0.2
 

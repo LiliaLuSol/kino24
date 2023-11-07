@@ -7,7 +7,7 @@ class CustomTextFormField extends StatelessWidget {
     this.alignment,
     this.width,
     this.margin,
-    this.controller,
+    required this.controller,
     this.focusNode,
     this.autofocus = true,
     this.textStyle,
@@ -15,7 +15,7 @@ class CustomTextFormField extends StatelessWidget {
     this.textInputAction = TextInputAction.next,
     this.textInputType = TextInputType.text,
     this.maxLines,
-    this.hintText,
+    required this.hintText,
     this.hintStyle,
     this.prefix,
     this.prefixConstraints,
@@ -26,52 +26,35 @@ class CustomTextFormField extends StatelessWidget {
     this.fillColor,
     this.filled = true,
     this.validator,
+    this.onChanged,
+    this.onSubmit,
   }) : super(
           key: key,
         );
 
+  final void Function(String)? onChanged;
+  final void Function(String)? onSubmit;
   final Alignment? alignment;
-
   final double? width;
-
   final EdgeInsetsGeometry? margin;
-
   final TextEditingController? controller;
-
   final FocusNode? focusNode;
-
   final bool? autofocus;
-
   final TextStyle? textStyle;
-
   final bool? obscureText;
-
   final TextInputAction? textInputAction;
-
   final TextInputType? textInputType;
-
   final int? maxLines;
-
   final String? hintText;
-
   final TextStyle? hintStyle;
-
   final Widget? prefix;
-
   final BoxConstraints? prefixConstraints;
-
   final Widget? suffix;
-
   final BoxConstraints? suffixConstraints;
-
   final EdgeInsets? contentPadding;
-
   final InputBorder? borderDecoration;
-
   final Color? fillColor;
-
   final bool? filled;
-
   final FormFieldValidator<String>? validator;
 
   @override
@@ -89,6 +72,8 @@ class CustomTextFormField extends StatelessWidget {
         margin: margin,
         child: TextFormField(
           controller: controller,
+          onChanged: onChanged,
+          onFieldSubmitted: onSubmit,
           focusNode: focusNode ?? FocusNode(),
           autofocus: autofocus!,
           style: textStyle ?? CustomTextStyles.bodyLargeBlack,
@@ -97,9 +82,12 @@ class CustomTextFormField extends StatelessWidget {
           keyboardType: textInputType,
           maxLines: maxLines ?? 1,
           decoration: decoration,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validator,
+          textCapitalization: TextCapitalization.sentences,
         ),
       );
+
   InputDecoration get decoration => InputDecoration(
         hintText: hintText ?? "",
         hintStyle: hintStyle ?? CustomTextStyles.bodyLargeBlack,
@@ -108,6 +96,7 @@ class CustomTextFormField extends StatelessWidget {
         suffixIcon: suffix,
         suffixIconConstraints: suffixConstraints,
         isDense: true,
+        alignLabelWithHint: true,
         contentPadding: contentPadding ??
             EdgeInsets.symmetric(
               horizontal: 16.h,

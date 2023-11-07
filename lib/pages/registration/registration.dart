@@ -1,5 +1,5 @@
-import 'bloc/registration_bloc.dart';
-import 'models/registration_model.dart';
+import 'package:kino24/blocs/Auth/bloc/authentication_bloc.dart';
+import 'package:kino24/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/widgets/app_bar/appbar_iconbutton_1.dart';
@@ -9,40 +9,70 @@ import 'package:kino24/widgets/custom_elevated_button.dart';
 import 'package:kino24/widgets/custom_icon_button.dart';
 import 'package:kino24/widgets/custom_text_form_field.dart';
 
-class Registration extends StatelessWidget {
-  Registration({Key? key}) : super(key: key);
+class Registration extends StatefulWidget {
+  const Registration({super.key});
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  State<Registration> createState() => _RegistrationState();
+}
+
+class _RegistrationState extends State<Registration>
+    with SingleTickerProviderStateMixin {
   final emailFocusNode = FocusNode();
   final inputfieldoneFocusNode = FocusNode();
   final inputfieldFocusNode = FocusNode();
 
-  static Widget builder(BuildContext context) {
-    return BlocProvider<RegistrationBloc>(
-        create: (context) => RegistrationBloc(
-            RegistrationState(registrationModelObj: RegistrationModel()))
-          ..add(RegistrationInitialEvent()),
-        child: Registration());
+  late TextEditingController _emailcontroller;
+  late TextEditingController _passcontroller;
+  late TextEditingController _confirmpasscontroller;
+  final _formkey = GlobalKey<FormState>();
+  late AnimationController _controller;
+
+  bool isEmailValid = false;
+  bool isPasswordValid = false;
+  bool isConfirmPasswordValid = false;
+
+  @override
+  void initState() {
+    _emailcontroller = TextEditingController();
+    _passcontroller = TextEditingController();
+    _confirmpasscontroller = TextEditingController();
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 2000))
+      ..forward();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailcontroller.dispose();
+    _passcontroller = TextEditingController();
+    _confirmpasscontroller = TextEditingController();
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    AuthenticationBloc blocProvider =
+        BlocProvider.of<AuthenticationBloc>(context);
     mediaQueryData = MediaQuery.of(context);
     return SafeArea(
-        child:  GestureDetector(
+        child: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
             },
             child: Scaffold(
                 extendBody: true,
                 extendBodyBehindAppBar: true,
-               resizeToAvoidBottomInset: false,
+                resizeToAvoidBottomInset: false,
                 appBar: CustomAppBar(
                     height: 45.v,
                     leadingWidth: double.maxFinite,
                     leading: AppbarIconbutton1(
                         svgPath: ImageConstant.imgArrowleft,
-                        margin: EdgeInsets.only(left: 21.h, right: 333.h),
+                        margin: EdgeInsets.only(left: 20.h, right: 333.h),
                         onTap: () {
                           onTapArrowleftone(context);
                         })),
@@ -60,7 +90,7 @@ class Registration extends StatelessWidget {
                       ),
                     ),
                     child: Form(
-                        key: _formKey,
+                        key: _formkey,
                         child: Container(
                             width: double.maxFinite,
                             padding: EdgeInsets.symmetric(
@@ -72,7 +102,7 @@ class Registration extends StatelessWidget {
                                   Padding(
                                       padding:
                                           EdgeInsets.only(left: 4.h, top: 13.v),
-                                      child: Text("lbl9".tr,
+                                      child: Text("Регистрация",
                                           style:
                                               theme.textTheme.headlineLarge)),
                                   Padding(
@@ -82,38 +112,33 @@ class Registration extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text("msg_email".tr,
+                                            Text("Введите ваш email",
                                                 style:
                                                     theme.textTheme.bodyMedium),
                                             SizedBox(height: 4.v),
-                                            BlocSelector<
-                                                    RegistrationBloc,
-                                                    RegistrationState,
-                                                    TextEditingController?>(
-                                                selector: (state) =>
-                                                    state.emailController,
-                                                builder:
-                                                    (context, emailController) {
-                                                  return CustomTextFormField(
-                                                      controller:
-                                                          emailController,
-                                                     focusNode: emailFocusNode,
-                                                      hintText:
-                                                          "msg_example".tr,
-                                                      textInputType:
-                                                          TextInputType
-                                                              .emailAddress,
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            (!isValidEmail(
-                                                                value,
-                                                                isRequired:
-                                                                    true))) {
-                                                          return "Please enter valid email";
-                                                        }
-                                                        return null;
-                                                      });
-                                                })
+                                            CustomTextFormField(
+                                              controller: _emailcontroller,
+                                              focusNode: emailFocusNode,
+                                              autofocus: false,
+                                              textStyle: const TextStyle(
+                                                  color: Colors.black),
+                                              hintText: "example@gmail.com",
+                                              textInputType:
+                                                  TextInputType.emailAddress,
+                                              validator: (value) {
+                                                return !Validators.isValidEmail(
+                                                        value!)
+                                                    ? "Введите действительный Email"
+                                                    : null;
+                                              },
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  isEmailValid =
+                                                      Validators.isValidEmail(
+                                                          value);
+                                                });
+                                              },
+                                            )
                                           ])),
                                   Padding(
                                       padding:
@@ -122,45 +147,64 @@ class Registration extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text("msg11".tr,
+                                            Text("Придумайте пароль",
                                                 style:
                                                     theme.textTheme.bodyMedium),
                                             SizedBox(height: 3.v),
-                                            BlocBuilder<RegistrationBloc,
-                                                    RegistrationState>(
+                                            BlocBuilder<AuthenticationBloc,
+                                                    AuthenticationState>(
                                                 builder: (context, state) {
                                               return CustomTextFormField(
-                                                  controller: state
-                                                      .inputfieldoneController,
-                                                  focusNode:inputfieldoneFocusNode,
-                                                  suffix: InkWell(
-                                                      onTap: () {
-                                                        context
-                                                            .read<
-                                                                RegistrationBloc>()
-                                                            .add(ChangePasswordVisibilityEvent(
-                                                                value: !state
-                                                                    .isShowPassword));
-                                                      },
-                                                      child: Container(
-                                                          margin: EdgeInsets
-                                                              .fromLTRB(
-                                                                  30.h,
-                                                                  21.v,
-                                                                  18.h,
-                                                                  22.v),
-                                                          child: CustomImageView(
-                                                              svgPath: state
-                                                                      .isShowPassword
-                                                                  ? ImageConstant
-                                                                      .imgEye
-                                                                  : ImageConstant
-                                                                      .imgEye))),
-                                                  suffixConstraints:
-                                                      BoxConstraints(
-                                                          maxHeight: 56.v),
-                                                  obscureText:
-                                                      state.isShowPassword);
+                                                controller: _passcontroller,
+                                                focusNode:
+                                                    inputfieldoneFocusNode,
+                                                autofocus: false,
+                                                textStyle: const TextStyle(
+                                                    color: Colors.black),
+                                                textInputAction:
+                                                    TextInputAction.done,
+                                                hintText: "Password",
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    isPasswordValid =
+                                                        value.length >= 6;
+                                                  });
+                                                },
+                                                suffix: InkWell(
+                                                    onTap: () {
+                                                      context
+                                                          .read<
+                                                              AuthenticationBloc>()
+                                                          .add(ChangePasswordVisibilityEvent(
+                                                              value: !state
+                                                                  .isShowPassword));
+                                                    },
+                                                    child: Container(
+                                                        margin:
+                                                            EdgeInsets.fromLTRB(
+                                                                30.h,
+                                                                21.v,
+                                                                18.h,
+                                                                22.v),
+                                                        child: CustomImageView(
+                                                          svgPath: state
+                                                                  .isShowPassword
+                                                              ? ImageConstant
+                                                                  .imgEye
+                                                              : ImageConstant
+                                                                  .imgEye,
+                                                        ))),
+                                                suffixConstraints:
+                                                    BoxConstraints(
+                                                        maxHeight: 56.v),
+                                                obscureText:
+                                                    state.isShowPassword,
+                                                validator: (value) {
+                                                  return value!.length < 6
+                                                      ? "Придумайте пароль не менее 6 символов"
+                                                      : null;
+                                                },
+                                              );
                                             })
                                           ])),
                                   Padding(
@@ -170,80 +214,124 @@ class Registration extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text("msg34".tr,
+                                            Text("Повторите пароль",
                                                 style:
                                                     theme.textTheme.bodyMedium),
                                             SizedBox(height: 3.v),
-                                            BlocBuilder<RegistrationBloc,
-                                                    RegistrationState>(
+                                            BlocBuilder<AuthenticationBloc,
+                                                    AuthenticationState>(
                                                 builder: (context, state) {
                                               return CustomTextFormField(
-                                                  controller: state
-                                                      .inputfieldController,
-                                                  focusNode: inputfieldFocusNode,
-                                                  textInputAction:
-                                                      TextInputAction.done,
-                                                  suffix: InkWell(
-                                                      onTap: () {
-                                                        context
-                                                            .read<
-                                                                RegistrationBloc>()
-                                                            .add(ChangePasswordVisibilityEvent1(
-                                                                value: !state
-                                                                    .isShowPassword1));
-                                                      },
-                                                      child: Container(
-                                                          margin: EdgeInsets
-                                                              .fromLTRB(
-                                                                  30.h,
-                                                                  21.v,
-                                                                  18.h,
-                                                                  22.v),
-                                                          child: CustomImageView(
-                                                              svgPath: state
-                                                                      .isShowPassword1
-                                                                  ? ImageConstant
-                                                                      .imgEye
-                                                                  : ImageConstant
-                                                                      .imgEye))),
-                                                  suffixConstraints:
-                                                      BoxConstraints(
-                                                          maxHeight: 56.v),
-                                                  obscureText:
-                                                      state.isShowPassword1);
+                                                controller:
+                                                    _confirmpasscontroller,
+                                                focusNode: inputfieldFocusNode,
+                                                autofocus: false,
+                                                textStyle: const TextStyle(
+                                                    color: Colors.black),
+                                                textInputAction:
+                                                    TextInputAction.done,
+                                                hintText: "Password",
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    isConfirmPasswordValid =
+                                                        value.length >= 6 &&
+                                                            value ==
+                                                                _passcontroller
+                                                                    .text;
+                                                  });
+                                                },
+                                                suffix: InkWell(
+                                                    onTap: () {
+                                                      context
+                                                          .read<
+                                                              AuthenticationBloc>()
+                                                          .add(ChangePassword1VisibilityEvent(
+                                                              value: !state
+                                                                  .isShowPassword1));
+                                                    },
+                                                    child: Container(
+                                                        margin:
+                                                            EdgeInsets.fromLTRB(
+                                                                30.h,
+                                                                21.v,
+                                                                18.h,
+                                                                22.v),
+                                                        child: CustomImageView(
+                                                          svgPath: state
+                                                                  .isShowPassword1
+                                                              ? ImageConstant
+                                                                  .imgEye
+                                                              : ImageConstant
+                                                                  .imgEye,
+                                                        ))),
+                                                suffixConstraints:
+                                                    BoxConstraints(
+                                                        maxHeight: 56.v),
+                                                obscureText:
+                                                    state.isShowPassword1,
+                                                validator: (value) {
+                                                  return value!.length < 6
+                                                      ? "Введите действительный пароль"
+                                                      : value !=
+                                                              _passcontroller
+                                                                  .text
+                                                          ? "Пароли не совпадают"
+                                                          : null;
+                                                },
+                                              );
                                             })
                                           ])),
-                                  BlocSelector<RegistrationBloc,
-                                          RegistrationState, bool?>(
+                                  BlocSelector<AuthenticationBloc,
+                                          AuthenticationState, bool?>(
                                       selector: (state) => state.wantNewsInfo,
                                       builder: (context, wantNewsInfo) {
                                         return CustomCheckboxButton(
-                                            text: "msg12".tr,
+                                            text:
+                                                "Хочу получать информацию о новостях и акциях",
                                             isExpandedText: true,
                                             value: wantNewsInfo,
+                                            checkColor:
+                                                theme.colorScheme.primary,
                                             margin: EdgeInsets.only(
                                                 left: 4.h,
                                                 top: 33.v,
                                                 right: 28.h),
                                             onChange: (value) {
                                               context
-                                                  .read<RegistrationBloc>()
+                                                  .read<AuthenticationBloc>()
                                                   .add(ChangeCheckBoxEvent(
                                                       value: value));
                                             });
                                       }),
-                                  CustomElevatedButton(
-                                    text: "lbl62".tr,
-                                    margin:
-                                        EdgeInsets.only(left: 3.h, top: 27.v),
-                                    buttonStyle: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          theme.colorScheme.primary,
-                                    ),
-                                  ),
+                                  Spacer(),
+                                  BlocBuilder<AuthenticationBloc,
+                                          AuthenticationState>(
+                                      builder: (context, state) {
+                                    return CustomElevatedButton(
+                                      text: "Создать аккаунт",
+                                      margin:
+                                          EdgeInsets.only(left: 3.h, top: 27.v),
+                                      buttonStyle: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            theme.colorScheme.primary,
+                                      ),
+                                      onTap: isEmailValid &&
+                                              isPasswordValid &&
+                                              isConfirmPasswordValid
+                                          ? () {
+                                        BlocProvider.of<AuthenticationBloc>(context).add(
+                                          EmailSignUpAuthEvent(_emailcontroller.text,
+                                              _passcontroller.text),
+                                        );
+                                              GoRouter.of(context)
+                                                  .push(AppRoutes.homepage);
+                                            }
+                                          : null,
+                                    );
+                                  }),
                                   Padding(
-                                      padding:
-                                          EdgeInsets.only(left: 3.h, top: 48.v),
+                                      padding: EdgeInsets.only(
+                                          left: 3.h, top: 19.4.v),
                                       child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -254,19 +342,19 @@ class Registration extends StatelessWidget {
                                                 padding: EdgeInsets.only(
                                                     bottom: 10.v),
                                                 child: SizedBox(
-                                                    width: 100.h,
+                                                    width: 80.h,
                                                     child: Divider(
                                                         thickness: 0.7,
                                                         color: appTheme
                                                             .whiteP70))),
-                                            Text("msg31".tr,
+                                            Text("Или войдите с помощью",
                                                 style: CustomTextStyles
                                                     .bodyMediumWhite),
                                             Padding(
                                                 padding: EdgeInsets.only(
                                                     bottom: 10.v),
                                                 child: SizedBox(
-                                                    width: 100.h,
+                                                    width: 80.h,
                                                     child: Divider(
                                                         thickness: 0.7,
                                                         color:
@@ -277,7 +365,7 @@ class Registration extends StatelessWidget {
                                           left: 4.h, top: 20.v, right: 5.h),
                                       child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             CustomIconButton(
                                               height: 56.v,
@@ -289,6 +377,13 @@ class Registration extends StatelessWidget {
                                                   right: 42.h),
                                               decoration: IconButtonStyleHelper
                                                   .fillWhiteA,
+                                              onTap: () {
+                                                // blocProvider.add(
+                                                //     const YandexAuthEvent());
+                                                context.showsnackbar(
+                                                    title: 'Скоро будет!',
+                                                    color: Colors.grey);
+                                              },
                                               child: CustomImageView(
                                                 svgPath: ImageConstant
                                                     .imgBrandicoyandexrect,
@@ -304,6 +399,10 @@ class Registration extends StatelessWidget {
                                                   right: 42.h),
                                               decoration: IconButtonStyleHelper
                                                   .fillWhiteA,
+                                              onTap: () {
+                                                blocProvider.add(
+                                                    const GoogleAuthEvent());
+                                              },
                                               child: CustomImageView(
                                                 svgPath: ImageConstant
                                                     .imgCevicongoogle,
@@ -318,11 +417,18 @@ class Registration extends StatelessWidget {
                                                     left: 42.h,
                                                     right: 42.h),
                                                 decoration:
-                                                    IconButtonStyleHelper
-                                                        .fillWhiteA,
+                                                IconButtonStyleHelper
+                                                    .fillWhiteA,
+                                                onTap: () {
+                                                  // blocProvider
+                                                  //     .add(const WKAuthEvent());
+                                                  context.showsnackbar(
+                                                      title: 'Скоро будет!',
+                                                      color: Colors.grey);
+                                                },
                                                 child: CustomImageView(
                                                   svgPath:
-                                                      ImageConstant.imgUilvk,
+                                                  ImageConstant.imgUilvk,
                                                 ))
                                           ])),
                                   SizedBox(height: 33.v),
@@ -330,19 +436,18 @@ class Registration extends StatelessWidget {
                                       alignment: Alignment.center,
                                       child: GestureDetector(
                                           onTap: () {
-                                            NavigatorService.pushNamed(
-                                              AppRoutes.authorization,
-                                            );
+                                            GoRouter.of(context)
+                                                .push(AppRoutes.authorization);
                                           },
                                           child: RichText(
                                               text: TextSpan(children: [
                                                 TextSpan(
-                                                    text: "msg13".tr,
+                                                    text: "Уже есть аккаунт?",
                                                     style: theme
                                                         .textTheme.bodyMedium),
-                                                TextSpan(text: "  ".tr),
+                                                const TextSpan(text: "  "),
                                                 TextSpan(
-                                                    text: "lbl8".tr,
+                                                    text: "Войти",
                                                     style: CustomTextStyles
                                                         .bodyMediumPrimary)
                                               ]),
@@ -350,24 +455,7 @@ class Registration extends StatelessWidget {
                                 ])))))));
   }
 
-  /// Navigates to the previous screen.
-  ///
-  /// This function takes a [BuildContext] object as a parameter, which is
-  /// used to build the navigation stack. When the action is triggered, this
-  /// function uses the [NavigatorService] to navigate to the previous screen
-  /// in the navigation stack.
   onTapArrowleftone(BuildContext context) {
-    NavigatorService.goBack();
+    GoRouter.of(context).push(AppRoutes.authReg);
   }
-
-  /// Navigates to the authorizationScreen when the action is triggered.
-  ///
-  /// The [BuildContext] parameter is used to build the navigation stack.
-  /// When the action is triggered, this function uses the [NavigatorService]
-  /// to push the named route for the authorizationScreen.
-// onTapTxttf(BuildContext context) {
-//   NavigatorService.pushNamed(
-//     AppRoutes.authorizationScreen,
-//   );
-// }
 }

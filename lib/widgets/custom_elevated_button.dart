@@ -8,6 +8,7 @@ class CustomElevatedButton extends BaseButton {
     this.decoration,
     this.leftIcon,
     this.rightIcon,
+    this.shape = const StadiumBorder(),
     EdgeInsets? margin,
     VoidCallback? onTap,
     ButtonStyle? buttonStyle,
@@ -30,10 +31,9 @@ class CustomElevatedButton extends BaseButton {
         );
 
   final BoxDecoration? decoration;
-
   final Widget? leftIcon;
-
   final Widget? rightIcon;
+  final OutlinedBorder? shape;
 
   @override
   Widget build(BuildContext context) {
