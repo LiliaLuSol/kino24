@@ -6,6 +6,7 @@ class CustomTextFormField extends StatelessWidget {
     Key? key,
     this.alignment,
     this.width,
+    this.height,
     this.margin,
     required this.controller,
     this.focusNode,
@@ -36,6 +37,7 @@ class CustomTextFormField extends StatelessWidget {
   final void Function(String)? onSubmit;
   final Alignment? alignment;
   final double? width;
+  final double? height;
   final EdgeInsetsGeometry? margin;
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -70,6 +72,7 @@ class CustomTextFormField extends StatelessWidget {
   Widget get textFormFieldWidget => Container(
         width: width ?? double.maxFinite,
         margin: margin,
+        height: height,
         child: TextFormField(
           controller: controller,
           onChanged: onChanged,
@@ -100,7 +103,7 @@ class CustomTextFormField extends StatelessWidget {
         contentPadding: contentPadding ??
             EdgeInsets.symmetric(
               horizontal: 16.h,
-              vertical: 17.v,
+              vertical: 16.v,
             ),
         fillColor: fillColor ?? appTheme.white,
         filled: filled,

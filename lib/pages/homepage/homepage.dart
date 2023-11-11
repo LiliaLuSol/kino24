@@ -3,15 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/pages/descriptiononfilm/descriptiononfilm.dart';
-import 'package:kino24/pages/selectseats/selectseats.dart';
-import 'package:kino24/widgets/app_bar/appbar_iconbutton.dart';
 import 'package:kino24/widgets/app_bar/appbar_image.dart';
-import 'package:kino24/widgets/app_bar/appbar_subtitle.dart';
 import 'package:kino24/widgets/app_bar/appbar_subtitle_2.dart';
 import 'package:kino24/widgets/app_bar/custom_app_bar.dart';
 import 'package:kino24/main.dart';
-import 'package:kino24/widgets/custom_elevated_button.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -71,7 +66,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
       child: Scaffold(
         extendBody: true,
         extendBodyBehindAppBar: true,
-        backgroundColor: Colors.transparent,
+        resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(
           height: 75.v,
           title: Padding(
@@ -177,7 +172,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
                           ),
                           Tab(
                             child: Text(
-                              "пушк. карта",
+                              "пушк.карта",
                               maxLines: 2,
                             ),
                           ),

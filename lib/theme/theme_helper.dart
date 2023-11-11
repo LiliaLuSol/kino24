@@ -240,6 +240,7 @@ class PrimaryColors {
   Color get blueGray100 => Color(0XFFD9D9D9);
   Color get blueGray400 => Color(0XFF888888);
   Color get blueGray900 => Color(0XFF263238);
+  Color get gray7C =>  Color(0XFF7C7C7C);
 
   // DeepOrange
   //Color get deepOrange600 => Color(0XFFF24E1E);

@@ -7,6 +7,7 @@ import 'package:kino24/pages/screen_layout/screen_layout.dart';
 import 'package:kino24/pages/auth_reg/auth_reg.dart';
 import 'package:kino24/pages/onboard/onboard.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kino24/pages/support/support.dart';
 import 'app_export.dart';
 
 class AppRoutes {
@@ -18,6 +19,7 @@ class AppRoutes {
   static const homepage = '/homepage';
   static const profileUser = '/profile_user';
   static const onboard = '/onboard';
+  static const support = '/support';
 
   static final GoRouter _router = GoRouter(
     routes: <GoRoute>[
@@ -50,6 +52,10 @@ class AppRoutes {
       GoRoute(
         path: homepage,
         builder: (context, state) => const BaseScreen(),
+      ),
+      GoRoute(
+        path: support,
+        builder: (context, state) => const Support(),
       ),
     ],
     initialLocation: root,

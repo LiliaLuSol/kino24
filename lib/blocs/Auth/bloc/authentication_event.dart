@@ -57,3 +57,11 @@ class ChangeCheckBoxEvent extends AuthenticationEvent {
   @override
   List<Object> get props => [value];
 }
+
+class ChangeSwitchEvent extends AuthenticationEvent {
+  ChangeSwitchEvent({required this.value});
+  bool value;
+
+  @override
+  List<Object> get props => [value,];
+}
