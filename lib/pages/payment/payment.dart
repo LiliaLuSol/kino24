@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kino24/main.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/widgets/app_bar/appbar_iconbutton.dart';
 import 'package:kino24/widgets/app_bar/appbar_subtitle.dart';
@@ -9,7 +10,9 @@ class Payment extends StatefulWidget {
   final dynamic movieData;
   final dynamic selectedTikets;
   final dynamic selectedfood;
+  final dynamic selectedId;
   final int hall;
+  final int id_show;
   final int totalAmoutTickets;
   final int totalAmoutFood;
   final String? selectedDate;
@@ -26,6 +29,8 @@ class Payment extends StatefulWidget {
       required this.totalAmoutTickets,
       required this.totalAmoutFood,
       required this.selectedfood,
+      required this.selectedId,
+      required this.id_show,
       required this.email});
 
   @override
@@ -33,6 +38,41 @@ class Payment extends StatefulWidget {
 }
 
 class _PaymentState extends State<Payment> {
+  String? getEmail() {
+    final currentUser = supabase.auth.currentUser;
+    if (currentUser != null) {
+      final email = currentUser.email!;
+      return email;
+    } else {
+      return "Ваш email скоро здесь появится...";
+    }
+  }
+
+  void saveSeat() async {
+    try {
+      final res = await supabase.from('users_tickets').select().execute();
+      String? email = getEmail();
+      for (String item in widget.selectedTikets) {
+        final seat = item.substring(0, item.indexOf('  '));
+        final count = res.data.length;
+        int countNew = count + 1;
+        email = email.toString();
+        print("$countNew $email $seat" + widget.hall.toString() + widget.movieData["title_rus"].toString() + widget.selectedDate.toString() +widget.selectedTime.toString());
+        supabase.from('users_tickets').upsert({
+          'id': countNew,
+          'user': email.toString(),
+          'seat': seat.toString(),
+          'hall': widget.hall.toString(),
+          'movie': widget.movieData["title_rus"].toString(),
+          'date': widget.selectedDate.toString(),
+          'time': widget.selectedTime.toString()
+        });
+      }
+    } catch (error) {
+      print('Ошибка при выполнении запроса: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
@@ -124,6 +164,26 @@ class _PaymentState extends State<Payment> {
                                                     .bodyLargeWhite,
                                               ),
                                               SizedBox(height: 16.v),
+                                              Text("Дата и время сеанса:",
+                                                  style: CustomTextStyles
+                                                      .titleMedium16),
+                                              RichText(
+                                                text: TextSpan(children: [
+                                                  TextSpan(
+                                                      text: widget.selectedDate,
+                                                      style: CustomTextStyles
+                                                          .bodyLargeWhite),
+                                                  TextSpan(
+                                                      text: " в ",
+                                                      style: CustomTextStyles
+                                                          .bodyLargeWhite),
+                                                  TextSpan(
+                                                      text: widget.selectedTime,
+                                                      style: CustomTextStyles
+                                                          .bodyLargeWhite)
+                                                ]),
+                                              ),
+                                              SizedBox(height: 16.v),
                                               Text("Зал:",
                                                   style: CustomTextStyles
                                                       .titleMedium16),
@@ -143,41 +203,34 @@ class _PaymentState extends State<Payment> {
                                               Text("Места:",
                                                   style: CustomTextStyles
                                                       .titleMedium16),
-                                               Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: widget
-                                                        .selectedTikets
-                                                        .map<Widget>((seat) =>
-                                                            buildTextRow(seat
-                                                                .toString()))
-                                                        .toList(),
-                                                  ),
+                                              Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: widget.selectedTikets
+                                                    .map<Widget>((seat) =>
+                                                        buildTextRow(
+                                                            seat.toString()))
+                                                    .toList(),
+                                              ),
                                               SizedBox(height: 16.v),
                                               Text("Онлайн-бар:",
                                                   style: CustomTextStyles
-                                                      .titleMedium16),Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: widget
-                                                        .selectedfood
-                                                        .map<Widget>((seat) =>
-                                                            buildTextRow(seat
-                                                                .toString()))
-                                                        .toList(),
-                                                  ),
+                                                      .titleMedium16),
+                                              Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: widget.selectedfood
+                                                    .map<Widget>((seat) =>
+                                                        buildTextRow(
+                                                            seat.toString()))
+                                                    .toList(),
+                                              ),
                                               SizedBox(height: 16.v),
                                               Text("Email:",
                                                   style: CustomTextStyles
@@ -227,9 +280,47 @@ class _PaymentState extends State<Payment> {
                                                     backgroundColor: theme
                                                         .colorScheme.primary,
                                                   ),
-                                                  onTap: () {
-                                                    GoRouter.of(context).push(
-                                                        AppRoutes.homepage);
+                                                  onTap: ()  async {
+                                                    try {
+                                                      supabase
+                                                          .from('av_seat_show')
+                                                          .update({
+                                                        'available': false
+                                                      })
+                                                          .eq('id_show_time',
+                                                          widget.id_show)
+                                                          .in_('id_seat',
+                                                          widget.selectedId)
+                                                          .execute();
+                                                      saveSeat();
+                                                      try {
+                                                        String? email = getEmail();
+                                                        for (String item in widget.selectedTikets) {
+                                                          final seat = item.substring(0, item.indexOf('  '));
+                                                          final res = await supabase.from('users_tickets').select().execute();
+                                                          int count = res.data.length;
+                                                          int countNew = count + 1;
+                                                          email = email.toString();
+                                                          print("$countNew $email $seat" + widget.hall.toString() + widget.movieData["title_rus"].toString() + widget.selectedDate.toString() +widget.selectedTime.toString());
+                                                          await supabase.from('users_tickets').insert({
+                                                            'id': countNew,
+                                                            'user': email.toString(),
+                                                            'seat': seat.toString(),
+                                                            'hall': widget.hall.toString(),
+                                                            'movie': widget.movieData["title_rus"].toString(),
+                                                            'date': widget.selectedDate.toString(),
+                                                            'time': widget.selectedTime.toString()
+                                                          });
+                                                        }
+                                                        GoRouter.of(context).push(
+                                                            AppRoutes.homepage);
+                                                      } catch (error) {
+                                                        print('Ошибка при выполнении запроса: $error');
+                                                      }
+                                                    } catch (e) {
+                                                      print(
+                                                          'Ошибка: $e');
+                                                    }
                                                   },
                                                   alignment: Alignment.center),
                                               SizedBox(height: 16.v),
@@ -241,9 +332,47 @@ class _PaymentState extends State<Payment> {
                                                     backgroundColor: theme
                                                         .colorScheme.primary,
                                                   ),
-                                                  onTap: () {
-                                                    GoRouter.of(context).push(
-                                                        AppRoutes.homepage);
+                                                  onTap: ()  async {
+                                                    try {
+                                                      supabase
+                                                          .from('av_seat_show')
+                                                          .update({
+                                                            'available': false
+                                                          })
+                                                          .eq('id_show_time',
+                                                              widget.id_show)
+                                                          .in_('id_seat',
+                                                              widget.selectedId)
+                                                          .execute();
+                                                      saveSeat();
+                                                      try {
+                                                        String? email = getEmail();
+                                                        for (String item in widget.selectedTikets) {
+                                                          final seat = item.substring(0, item.indexOf('  '));
+                                                          final res = await supabase.from('users_tickets').select().execute();
+                                                          int count = res.data.length;
+                                                          int countNew = count + 1;
+                                                          email = email.toString();
+                                                          print("$countNew $email $seat" + widget.hall.toString() + widget.movieData["title_rus"].toString() + widget.selectedDate.toString() +widget.selectedTime.toString());
+                                                          await supabase.from('users_tickets').insert({
+                                                            'id': countNew,
+                                                            'user': email.toString(),
+                                                            'seat': seat.toString(),
+                                                            'hall': widget.hall.toString(),
+                                                            'movie': widget.movieData["title_rus"].toString(),
+                                                            'date': widget.selectedDate.toString(),
+                                                            'time': widget.selectedTime.toString()
+                                                          });
+                                                        }
+                                                        GoRouter.of(context).push(
+                                                            AppRoutes.homepage);
+                                                      } catch (error) {
+                                                        print('Ошибка при выполнении запроса: $error');
+                                                      }
+                                                    } catch (e) {
+                                                      print(
+                                                          'Ошибка: $e');
+                                                    }
                                                   },
                                                   alignment: Alignment.center),
                                               SizedBox(height: 16.v),

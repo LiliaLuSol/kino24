@@ -21,6 +21,7 @@ class _SelectSeatsState extends State<SelectSeats> {
   int DateIndex = 0;
   int TimeIndex = 0;
   int hall = 0;
+  int id_show = 0;
   String? selectedDate;
   String? selectedTime;
   int totalAmountTickets = 0;
@@ -387,9 +388,11 @@ class _SelectSeatsState extends State<SelectSeats> {
                                             builder: (context) => SelectFood(
                                                 movieData: widget.movieData,
                                                 hall: hall,
+                                                id_show: id_show,
                                                 selectedDate: selectedDate,
                                                 selectedTime: selectedTime,
                                                 selectedTikets: selectedSeats,
+                                                selectedId: selectedIdSeats,
                                                 totalAmoutTickets:
                                                     totalAmountTickets),
                                           ),
@@ -452,6 +455,7 @@ class _SelectSeatsState extends State<SelectSeats> {
               selectedTime = formattedTime;
               TimeIndex = movieList[index]["showtime_time_id"];
               hall = movieList[index]["theater_hall"];
+              id_show = movieList[index]["showtime_time_id"];
               clearSelections();
             });
           });
@@ -459,16 +463,19 @@ class _SelectSeatsState extends State<SelectSeats> {
   }
 
   List<dynamic> selectedSeats = [];
+  List<dynamic> selectedIdSeats = [];
 
-  void selectSeat(String seat, int cost) {
+  void selectSeat(String seat, int cost, int index) {
     if (!selectedSeats.contains(seat)) {
       setState(() {
         selectedSeats.add(seat);
+        selectedIdSeats.add(index+1);
         totalAmountTickets += cost;
       });
     } else {
       setState(() {
         selectedSeats.remove(seat);
+        selectedIdSeats.remove(index+1);
         totalAmountTickets -= cost;
       });
     }
@@ -477,6 +484,7 @@ class _SelectSeatsState extends State<SelectSeats> {
   void clearSelections() {
     setState(() {
       selectedSeats.clear();
+      selectedIdSeats.clear();
     });
   }
 
@@ -513,7 +521,7 @@ class _SelectSeatsState extends State<SelectSeats> {
         bool isSelected = selectedSeats.contains(seat);
         return InkWell(
           onTap: () {
-            isAvailable ? selectSeat(seat, cost) : null;
+            isAvailable ? selectSeat(seat, cost, index) : null;
           },
           child: buildSeatWidget(isAvailable, isSelected),
         );

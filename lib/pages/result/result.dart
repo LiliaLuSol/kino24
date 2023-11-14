@@ -14,7 +14,9 @@ class Result extends StatefulWidget {
   final dynamic movieData;
   final dynamic selectedTikets;
   final dynamic selectedfood;
+  final dynamic selectedId;
   final int hall;
+  final int id_show;
   final int totalAmoutTickets;
   final int totalAmoutFood;
   final String? selectedDate;
@@ -27,8 +29,10 @@ class Result extends StatefulWidget {
       required this.selectedDate,
       required this.selectedTime,
       required this.selectedTikets,
+      required this.selectedId,
       required this.totalAmoutTickets,
       required this.totalAmoutFood,
+        required this.id_show,
       required this.selectedfood});
 
   @override
@@ -409,8 +413,9 @@ class _ResultState extends State<Result> {
                                                                 .text
                                                                 .isNotEmpty &&
                                                             wantNewsInfo1) {
-                                                          email = _emailcontroller
-                                                              .text;
+                                                          email =
+                                                              _emailcontroller
+                                                                  .text;
                                                           Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
@@ -425,8 +430,7 @@ class _ResultState extends State<Result> {
                                                                   selectedTime:
                                                                       widget
                                                                           .selectedTime,
-                                                                  email:
-                                                                      email,
+                                                                  email: email,
                                                                   totalAmoutFood:
                                                                       widget
                                                                           .totalAmoutFood,
@@ -438,7 +442,10 @@ class _ResultState extends State<Result> {
                                                                           .totalAmoutTickets,
                                                                   selectedfood:
                                                                       widget
-                                                                          .selectedfood),
+                                                                          .selectedfood,
+                                                                  selectedId: widget
+                                                                      .selectedId,
+                                                                  id_show: widget.id_show),
                                                             ),
                                                           );
                                                         } else {

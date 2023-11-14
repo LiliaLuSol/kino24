@@ -11,7 +11,9 @@ import 'package:kino24/widgets/custom_icon_button.dart';
 class SelectFood extends StatefulWidget {
   final dynamic movieData;
   final dynamic selectedTikets;
+  final dynamic selectedId;
   final int hall;
+  final int id_show;
   final int totalAmoutTickets;
   final String? selectedDate;
   final String? selectedTime;
@@ -23,6 +25,8 @@ class SelectFood extends StatefulWidget {
       required this.selectedDate,
       required this.selectedTime,
       required this.selectedTikets,
+      required this.selectedId,
+      required this.id_show,
       required this.totalAmoutTickets});
 
   @override
@@ -136,7 +140,8 @@ class _SelectFoodState extends State<SelectFood> {
       if (quantities1[i] > 0) {
         double totalCost = 0;
         totalCost += (foodListCombo[i]["cost"] * quantities1[i]);
-        name_food1.add(foodListCombo[i]["name"] + "  " +
+        name_food1.add(foodListCombo[i]["name"] +
+            "  " +
             " х" +
             quantities1[i].toString() +
             "  " +
@@ -149,7 +154,8 @@ class _SelectFoodState extends State<SelectFood> {
       if (quantities2[i] > 0) {
         double totalCost = 0;
         totalCost += (foodListPopcorn[i]["cost"] * quantities2[i]);
-        name_food1.add(foodListPopcorn[i]["name"] + "   " +
+        name_food1.add(foodListPopcorn[i]["name"] +
+            "   " +
             " х" +
             quantities2[i].toString() +
             "   " +
@@ -162,7 +168,8 @@ class _SelectFoodState extends State<SelectFood> {
       if (quantities3[i] > 0) {
         double totalCost = 0;
         totalCost += (foodListDrinks[i]["cost"] * quantities3[i]);
-        name_food1.add(foodListDrinks[i]["name"] + "   " +
+        name_food1.add(foodListDrinks[i]["name"] +
+            "   " +
             " х" +
             quantities3[i].toString() +
             "   " +
@@ -175,7 +182,8 @@ class _SelectFoodState extends State<SelectFood> {
       if (quantities4[i] > 0) {
         double totalCost = 0;
         totalCost += (foodListChips[i]["cost"] * quantities4[i]);
-        name_food1.add(foodListChips[i]["name"] + "   " +
+        name_food1.add(foodListChips[i]["name"] +
+            "   " +
             " х" +
             quantities4[i].toString() +
             "   " +
@@ -188,7 +196,8 @@ class _SelectFoodState extends State<SelectFood> {
       if (quantities5[i] > 0) {
         double totalCost = 0;
         totalCost += (foodListSweet[i]["cost"] * quantities5[i]);
-        name_food1.add(foodListSweet[i]["name"] + "   " +
+        name_food1.add(foodListSweet[i]["name"] +
+            "   " +
             " х" +
             quantities5[i].toString() +
             "   " +
@@ -381,7 +390,10 @@ class _SelectFoodState extends State<SelectFood> {
                                                           totalAmoutFood:
                                                               totalAmoutFood,
                                                           selectedfood:
-                                                              name_food1),
+                                                              name_food1,
+                                                          selectedId: widget
+                                                              .selectedId,
+                                                      id_show: widget.id_show),
                                                     ),
                                                   );
                                                 },

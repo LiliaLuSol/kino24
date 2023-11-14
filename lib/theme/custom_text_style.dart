@@ -53,10 +53,23 @@ class CustomTextStyles {
         fontWeight: FontWeight.w600,
       );
 
+  static get BoldBlack14 =>
+      theme.textTheme.headlineLarge!.openSans.copyWith(
+        color: appTheme.black,
+        fontSize: 14.fSize,
+        fontWeight: FontWeight.w800,
+      );
+
   static get titleRegularOrange14 =>
       theme.textTheme.headlineLarge!.openSans.copyWith(
         color: theme.colorScheme.primary,
         fontSize: 14.fSize,
+      );
+
+  static get RegularBlack12 =>
+      theme.textTheme.headlineLarge!.openSans.copyWith(
+        color: appTheme.black,
+        fontSize: 12.fSize,
       );
 
   static get bodyLarge => theme.textTheme.bodyLarge!.copyWith(
