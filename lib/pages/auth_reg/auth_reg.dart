@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kino24/other/app_export.dart';
-import 'package:kino24/widgets/custom_elevated_button.dart';
 
 class AuthReg extends StatefulWidget {
   const AuthReg({super.key});

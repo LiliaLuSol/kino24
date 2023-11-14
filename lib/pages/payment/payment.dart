@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kino24/main.dart';
 import 'package:kino24/other/app_export.dart';
-import 'package:kino24/widgets/app_bar/appbar_iconbutton.dart';
-import 'package:kino24/widgets/app_bar/appbar_subtitle.dart';
-import 'package:kino24/widgets/app_bar/custom_app_bar.dart';
-import 'package:kino24/widgets/custom_elevated_button.dart';
 
 class Payment extends StatefulWidget {
   final dynamic movieData;
@@ -57,7 +53,6 @@ class _PaymentState extends State<Payment> {
         final count = res.data.length;
         int countNew = count + 1;
         email = email.toString();
-        print("$countNew $email $seat" + widget.hall.toString() + widget.movieData["title_rus"].toString() + widget.selectedDate.toString() +widget.selectedTime.toString());
         supabase.from('users_tickets').upsert({
           'id': countNew,
           'user': email.toString(),
@@ -301,7 +296,6 @@ class _PaymentState extends State<Payment> {
                                                           int count = res.data.length;
                                                           int countNew = count + 1;
                                                           email = email.toString();
-                                                          print("$countNew $email $seat" + widget.hall.toString() + widget.movieData["title_rus"].toString() + widget.selectedDate.toString() +widget.selectedTime.toString());
                                                           await supabase.from('users_tickets').insert({
                                                             'id': countNew,
                                                             'user': email.toString(),
@@ -353,7 +347,6 @@ class _PaymentState extends State<Payment> {
                                                           int count = res.data.length;
                                                           int countNew = count + 1;
                                                           email = email.toString();
-                                                          print("$countNew $email $seat" + widget.hall.toString() + widget.movieData["title_rus"].toString() + widget.selectedDate.toString() +widget.selectedTime.toString());
                                                           await supabase.from('users_tickets').insert({
                                                             'id': countNew,
                                                             'user': email.toString(),

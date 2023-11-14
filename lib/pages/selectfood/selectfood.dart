@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kino24/main.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/pages/result/result.dart';
-import 'package:kino24/widgets/app_bar/appbar_iconbutton.dart';
-import 'package:kino24/widgets/app_bar/appbar_subtitle.dart';
-import 'package:kino24/widgets/app_bar/custom_app_bar.dart';
-import 'package:kino24/widgets/custom_elevated_button.dart';
-import 'package:kino24/widgets/custom_icon_button.dart';
 
 class SelectFood extends StatefulWidget {
   final dynamic movieData;
@@ -34,7 +29,7 @@ class SelectFood extends StatefulWidget {
 }
 
 class _SelectFoodState extends State<SelectFood> {
-  int totalAmoutFood = 0;
+  int totalAmountFood = 0;
 
   Future<dynamic> getComboList() async {
     List<dynamic> foodList =
@@ -77,6 +72,8 @@ class _SelectFoodState extends State<SelectFood> {
     return foodList;
   }
 
+  List<int> quantities = List.filled(20, 0);
+
   List<int> quantities1 = List.filled(20, 0);
   List<int> quantities2 = List.filled(20, 0);
   List<int> quantities3 = List.filled(20, 0);
@@ -89,33 +86,37 @@ class _SelectFoodState extends State<SelectFood> {
   List<dynamic> foodListChips = [];
   List<dynamic> foodListSweet = [];
 
-  void updateQuantity1(int index, int value) {
+  void updateQuantity(int index, int value, int listIndex) {
     setState(() {
-      quantities1[index] = (quantities1[index] + value).clamp(0, 99);
-    });
-  }
+      List<int> selectedQuantities;
+      List<dynamic> selectedFoodList;
 
-  void updateQuantity2(int index, int value) {
-    setState(() {
-      quantities2[index] = (quantities2[index] + value).clamp(0, 99);
-    });
-  }
+      switch (listIndex) {
+        case 1:
+          selectedQuantities = quantities1;
+          selectedFoodList = foodListCombo;
+          break;
+        case 2:
+          selectedQuantities = quantities2;
+          selectedFoodList = foodListPopcorn;
+          break;
+        case 3:
+          selectedQuantities = quantities3;
+          selectedFoodList = foodListDrinks;
+          break;
+        case 4:
+          selectedQuantities = quantities4;
+          selectedFoodList = foodListChips;
+          break;
+        case 5:
+          selectedQuantities = quantities5;
+          selectedFoodList = foodListSweet;
+          break;
+        default:
+          return;
+      }
 
-  void updateQuantity3(int index, int value) {
-    setState(() {
-      quantities3[index] = (quantities3[index] + value).clamp(0, 99);
-    });
-  }
-
-  void updateQuantity4(int index, int value) {
-    setState(() {
-      quantities4[index] = (quantities4[index] + value).clamp(0, 99);
-    });
-  }
-
-  void updateQuantity5(int index, int value) {
-    setState(() {
-      quantities5[index] = (quantities5[index] + value).clamp(0, 99);
+      selectedQuantities[index] = (selectedQuantities[index] + value).clamp(0, 99);
     });
   }
 
@@ -134,8 +135,7 @@ class _SelectFoodState extends State<SelectFood> {
       List<dynamic> foodListChips,
       List<dynamic> foodListSweet) {
     clearSelections();
-    totalAmoutFood = 0;
-    const maxLength = 70;
+    totalAmountFood = 0;
     for (int i = 0; i < foodListCombo.length; i++) {
       if (quantities1[i] > 0) {
         double totalCost = 0;
@@ -147,7 +147,7 @@ class _SelectFoodState extends State<SelectFood> {
             "  " +
             totalCost.toInt().toString() +
             " руб.");
-        totalAmoutFood += totalCost.toInt();
+        totalAmountFood += totalCost.toInt();
       }
     }
     for (int i = 0; i < foodListPopcorn.length; i++) {
@@ -161,7 +161,7 @@ class _SelectFoodState extends State<SelectFood> {
             "   " +
             totalCost.toInt().toString() +
             " руб.");
-        totalAmoutFood += totalCost.toInt();
+        totalAmountFood += totalCost.toInt();
       }
     }
     for (int i = 0; i < foodListDrinks.length; i++) {
@@ -175,7 +175,7 @@ class _SelectFoodState extends State<SelectFood> {
             "   " +
             totalCost.toInt().toString() +
             " руб.");
-        totalAmoutFood += totalCost.toInt();
+        totalAmountFood += totalCost.toInt();
       }
     }
     for (int i = 0; i < foodListChips.length; i++) {
@@ -189,7 +189,7 @@ class _SelectFoodState extends State<SelectFood> {
             "   " +
             totalCost.toInt().toString() +
             " руб.");
-        totalAmoutFood += totalCost.toInt();
+        totalAmountFood += totalCost.toInt();
       }
     }
     for (int i = 0; i < foodListSweet.length; i++) {
@@ -203,7 +203,7 @@ class _SelectFoodState extends State<SelectFood> {
             "   " +
             totalCost.toInt().toString() +
             " руб.");
-        totalAmoutFood += totalCost.toInt();
+        totalAmountFood += totalCost.toInt();
       }
     }
   }
@@ -388,12 +388,13 @@ class _SelectFoodState extends State<SelectFood> {
                                                           selectedTikets: widget
                                                               .selectedTikets,
                                                           totalAmoutFood:
-                                                              totalAmoutFood,
+                                                              totalAmountFood,
                                                           selectedfood:
                                                               name_food1,
-                                                          selectedId: widget
-                                                              .selectedId,
-                                                      id_show: widget.id_show),
+                                                          selectedId:
+                                                              widget.selectedId,
+                                                          id_show:
+                                                              widget.id_show),
                                                     ),
                                                   );
                                                 },
@@ -405,25 +406,26 @@ class _SelectFoodState extends State<SelectFood> {
                     ])))));
   }
 
-  Widget buildFoodGrid1(List<dynamic> foodList) {
-    foodListCombo = foodList;
+  Widget buildFoodGrid(List<dynamic> foodList, List<int> quantities, Function(int, int, int) updateFunction, int listIndex) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          childAspectRatio: 0.54,
-          crossAxisSpacing: 16.h,
-          mainAxisSpacing: 16.h,
-          mainAxisExtent: 432.v),
+        maxCrossAxisExtent: 200,
+        childAspectRatio: 0.54,
+        crossAxisSpacing: 16.h,
+        mainAxisSpacing: 16.h,
+        mainAxisExtent: 432.v,
+      ),
       shrinkWrap: true,
       itemCount: foodList.length,
       itemBuilder: (BuildContext ctx, index) {
         return Container(
-            width: 353.h,
-            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
-            decoration: AppDecoration.fillOnPrimary
-                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
-            alignment: Alignment.topCenter,
-            child: Column(children: [
+          width: 353.h,
+          padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
+          decoration: AppDecoration.fillOnPrimary
+              .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: [
               SizedBox(height: 16.v),
               Container(
                 decoration: BoxDecoration(
@@ -444,427 +446,99 @@ class _SelectFoodState extends State<SelectFood> {
               ),
               SizedBox(height: 7.v),
               SizedBox(
-                  width: 309.h,
-                  child: Text(foodList[index]["description"],
-                      maxLines: 7,
-                      //  overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: CustomTextStyles.bodySmallWhiteLight)),
+                width: 309.h,
+                child: Text(
+                  foodList[index]["description"],
+                  maxLines: 7,
+                  textAlign: TextAlign.center,
+                  style: CustomTextStyles.bodySmallWhiteLight,
+                ),
+              ),
               Spacer(),
               RichText(
-                  text: TextSpan(children: [
-                TextSpan(
-                    text: foodList[index]["cost"].toString(),
-                    style: CustomTextStyles.bodyLargeWhite18),
-                TextSpan(
-                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
-              ])),
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: foodList[index]["cost"].toString(),
+                      style: CustomTextStyles.bodyLargeWhite18,
+                    ),
+                    TextSpan(
+                      text: " руб.",
+                      style: CustomTextStyles.bodyLargeWhite18,
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 8.v),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CustomIconButton(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomIconButton(
                     height: 33.adaptSize,
                     width: 33.adaptSize,
                     padding: EdgeInsets.all(5.h),
                     decoration: IconButtonStyleHelper.outlineWhite,
                     child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineminus,
-                        color: Colors.white),
+                      svgPath: ImageConstant.imgIcbaselineminus,
+                      color: Colors.white,
+                    ),
                     onTap: () {
-                      updateQuantity1(index, -1);
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-                Padding(
+                      updateFunction(index, -1, listIndex);
+                      calculateTotalCost(foodListCombo, foodListPopcorn, foodListDrinks, foodListChips, foodListSweet);
+                    },
+                  ),
+                  Padding(
                     padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
-                    child: Text(quantities1[index].toString(),
-                        style: CustomTextStyles.bodyLargeWhite18)),
-                CustomIconButton(
+                    child: Text(
+                      quantities[index].toString(),
+                      style: CustomTextStyles.bodyLargeWhite18,
+                    ),
+                  ),
+                  CustomIconButton(
                     height: 33.adaptSize,
                     width: 33.adaptSize,
                     margin: EdgeInsets.only(left: 21.h),
                     padding: EdgeInsets.all(5.h),
                     child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineplus),
+                      svgPath: ImageConstant.imgIcbaselineplus,
+                    ),
                     onTap: () {
-                      updateQuantity1(index, 1);
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-              ]),
+                      updateFunction(index, 1, listIndex);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,foodListDrinks, foodListChips, foodListSweet);
+                    },
+                  ),
+                ],
+              ),
               SizedBox(height: 16.v),
-            ]));
+            ],
+          ),
+        );
       },
     );
+  }
+
+  Widget buildFoodGrid1(List<dynamic> foodList) {
+    foodListCombo = foodList;
+    return buildFoodGrid(foodList, quantities1, updateQuantity, 1);
   }
 
   Widget buildFoodGrid2(List<dynamic> foodList) {
     foodListPopcorn = foodList;
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          childAspectRatio: 0.54,
-          crossAxisSpacing: 16.h,
-          mainAxisSpacing: 16.h,
-          mainAxisExtent: 432.v),
-      shrinkWrap: true,
-      itemCount: foodList.length,
-      itemBuilder: (BuildContext ctx, index) {
-        return Container(
-            width: 353.h,
-            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
-            decoration: AppDecoration.fillOnPrimary
-                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
-            alignment: Alignment.topCenter,
-            child: Column(children: [
-              SizedBox(height: 16.v),
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(foodList[index]["image"]),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                height: 130.v,
-                width: 120.v,
-              ),
-              SizedBox(height: 9.v),
-              Text(
-                foodList[index]["name"],
-                style: CustomTextStyles.bodyLargeWhite18,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 7.v),
-              SizedBox(
-                  width: 309.h,
-                  child: Text(foodList[index]["description"],
-                      maxLines: 7,
-                      //  overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: CustomTextStyles.bodySmallWhiteLight)),
-              Spacer(),
-              RichText(
-                  text: TextSpan(children: [
-                TextSpan(
-                    text: foodList[index]["cost"].toString(),
-                    style: CustomTextStyles.bodyLargeWhite18),
-                TextSpan(
-                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
-              ])),
-              SizedBox(height: 8.v),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CustomIconButton(
-                    height: 33.adaptSize,
-                    width: 33.adaptSize,
-                    padding: EdgeInsets.all(5.h),
-                    decoration: IconButtonStyleHelper.outlineWhite,
-                    child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineminus,
-                        color: Colors.white),
-                    onTap: () {
-                      updateQuantity2(index, -1);
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-                Padding(
-                    padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
-                    child: Text(quantities2[index].toString(),
-                        style: CustomTextStyles.bodyLargeWhite18)),
-                CustomIconButton(
-                    height: 33.adaptSize,
-                    width: 33.adaptSize,
-                    margin: EdgeInsets.only(left: 21.h),
-                    padding: EdgeInsets.all(5.h),
-                    child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineplus),
-                    onTap: () {
-                      updateQuantity2(index, 1);
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-              ]),
-              SizedBox(height: 16.v),
-            ]));
-      },
-    );
+    return buildFoodGrid(foodList, quantities2, updateQuantity, 2);
   }
 
   Widget buildFoodGrid3(List<dynamic> foodList) {
     foodListDrinks = foodList;
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          childAspectRatio: 0.54,
-          crossAxisSpacing: 16.h,
-          mainAxisSpacing: 16.h,
-          mainAxisExtent: 432.v),
-      shrinkWrap: true,
-      itemCount: foodList.length,
-      itemBuilder: (BuildContext ctx, index) {
-        return Container(
-            width: 353.h,
-            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
-            decoration: AppDecoration.fillOnPrimary
-                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
-            alignment: Alignment.topCenter,
-            child: Column(children: [
-              SizedBox(height: 16.v),
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(foodList[index]["image"]),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                height: 130.v,
-                width: 120.v,
-              ),
-              SizedBox(height: 9.v),
-              Text(
-                foodList[index]["name"],
-                style: CustomTextStyles.bodyLargeWhite18,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 7.v),
-              SizedBox(
-                  width: 309.h,
-                  child: Text(foodList[index]["description"],
-                      maxLines: 7,
-                      //  overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: CustomTextStyles.bodySmallWhiteLight)),
-              Spacer(),
-              RichText(
-                  text: TextSpan(children: [
-                TextSpan(
-                    text: foodList[index]["cost"].toString(),
-                    style: CustomTextStyles.bodyLargeWhite18),
-                TextSpan(
-                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
-              ])),
-              SizedBox(height: 8.v),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CustomIconButton(
-                    height: 33.adaptSize,
-                    width: 33.adaptSize,
-                    padding: EdgeInsets.all(5.h),
-                    decoration: IconButtonStyleHelper.outlineWhite,
-                    child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineminus,
-                        color: Colors.white),
-                    onTap: () {
-                      updateQuantity3(index, -1);
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-                Padding(
-                    padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
-                    child: Text(quantities3[index].toString(),
-                        style: CustomTextStyles.bodyLargeWhite18)),
-                CustomIconButton(
-                    height: 33.adaptSize,
-                    width: 33.adaptSize,
-                    margin: EdgeInsets.only(left: 21.h),
-                    padding: EdgeInsets.all(5.h),
-                    child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineplus),
-                    onTap: () {
-                      updateQuantity3(index, 1);
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-              ]),
-              SizedBox(height: 16.v),
-            ]));
-      },
-    );
+    return buildFoodGrid(foodList, quantities3, updateQuantity, 3);
   }
 
   Widget buildFoodGrid4(List<dynamic> foodList) {
     foodListChips = foodList;
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          childAspectRatio: 0.54,
-          crossAxisSpacing: 16.h,
-          mainAxisSpacing: 16.h,
-          mainAxisExtent: 432.v),
-      shrinkWrap: true,
-      itemCount: foodList.length,
-      itemBuilder: (BuildContext ctx, index) {
-        return Container(
-            width: 353.h,
-            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
-            decoration: AppDecoration.fillOnPrimary
-                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
-            alignment: Alignment.topCenter,
-            child: Column(children: [
-              SizedBox(height: 16.v),
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(foodList[index]["image"]),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                height: 130.v,
-                width: 120.v,
-              ),
-              SizedBox(height: 9.v),
-              Text(
-                foodList[index]["name"],
-                style: CustomTextStyles.bodyLargeWhite18,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 7.v),
-              SizedBox(
-                  width: 309.h,
-                  child: Text(foodList[index]["description"],
-                      maxLines: 7,
-                      //  overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: CustomTextStyles.bodySmallWhiteLight)),
-              Spacer(),
-              RichText(
-                  text: TextSpan(children: [
-                TextSpan(
-                    text: foodList[index]["cost"].toString(),
-                    style: CustomTextStyles.bodyLargeWhite18),
-                TextSpan(
-                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
-              ])),
-              SizedBox(height: 8.v),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CustomIconButton(
-                    height: 33.adaptSize,
-                    width: 33.adaptSize,
-                    padding: EdgeInsets.all(5.h),
-                    decoration: IconButtonStyleHelper.outlineWhite,
-                    child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineminus,
-                        color: Colors.white),
-                    onTap: () {
-                      updateQuantity4(index, -1);
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-                Padding(
-                    padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
-                    child: Text(quantities4[index].toString(),
-                        style: CustomTextStyles.bodyLargeWhite18)),
-                CustomIconButton(
-                    height: 33.adaptSize,
-                    width: 33.adaptSize,
-                    margin: EdgeInsets.only(left: 21.h),
-                    padding: EdgeInsets.all(5.h),
-                    child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineplus),
-                    onTap: () {
-                      updateQuantity4(index, 1);
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-              ]),
-              SizedBox(height: 16.v),
-            ]));
-      },
-    );
+    return buildFoodGrid(foodList, quantities4, updateQuantity, 4);
   }
 
   Widget buildFoodGrid5(List<dynamic> foodList) {
     foodListSweet = foodList;
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          childAspectRatio: 0.54,
-          crossAxisSpacing: 16.h,
-          mainAxisSpacing: 16.h,
-          mainAxisExtent: 432.v),
-      shrinkWrap: true,
-      itemCount: foodList.length,
-      itemBuilder: (BuildContext ctx, index) {
-        return Container(
-            width: 353.h,
-            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
-            decoration: AppDecoration.fillOnPrimary
-                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
-            alignment: Alignment.topCenter,
-            child: Column(children: [
-              SizedBox(height: 16.v),
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(foodList[index]["image"]),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                height: 130.v,
-                width: 120.v,
-              ),
-              SizedBox(height: 9.v),
-              Text(
-                foodList[index]["name"],
-                style: CustomTextStyles.bodyLargeWhite18,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 7.v),
-              SizedBox(
-                  width: 309.h,
-                  child: Text(foodList[index]["description"],
-                      maxLines: 7,
-                      //  overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: CustomTextStyles.bodySmallWhiteLight)),
-              Spacer(),
-              RichText(
-                  text: TextSpan(children: [
-                TextSpan(
-                    text: foodList[index]["cost"].toString(),
-                    style: CustomTextStyles.bodyLargeWhite18),
-                TextSpan(
-                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
-              ])),
-              SizedBox(height: 8.v),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CustomIconButton(
-                    height: 33.adaptSize,
-                    width: 33.adaptSize,
-                    padding: EdgeInsets.all(5.h),
-                    decoration: IconButtonStyleHelper.outlineWhite,
-                    child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineminus,
-                        color: Colors.white),
-                    onTap: () {
-                      updateQuantity5(
-                        index,
-                        -1,
-                      );
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-                Padding(
-                    padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
-                    child: Text(quantities5[index].toString(),
-                        style: CustomTextStyles.bodyLargeWhite18)),
-                CustomIconButton(
-                    height: 33.adaptSize,
-                    width: 33.adaptSize,
-                    margin: EdgeInsets.only(left: 21.h),
-                    padding: EdgeInsets.all(5.h),
-                    child: CustomImageView(
-                        svgPath: ImageConstant.imgIcbaselineplus),
-                    onTap: () {
-                      updateQuantity5(index, 1);
-                      calculateTotalCost(foodListCombo, foodListPopcorn,
-                          foodListDrinks, foodListChips, foodListSweet);
-                    }),
-              ]),
-              SizedBox(height: 16.v),
-            ]));
-      },
-    );
+    return buildFoodGrid(foodList, quantities5, updateQuantity, 5);
   }
 }

@@ -4,10 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/blocs/Auth/bloc/authentication_bloc.dart';
-import 'package:kino24/utils/bloc_observer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sizer/sizer.dart';
-import 'package:kino24/utils/get_it.dart' as get_it;
 
 var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -23,7 +21,6 @@ void main() async {
     authFlowType: AuthFlowType.pkce,
     debug: false,
   );
-  get_it.init();
   Bloc.observer = MyBlocObserver();
   runApp(
     MultiBlocProvider(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/blocs/Auth/bloc/authentication_bloc.dart';
-import 'package:kino24/widgets/custom_elevated_button.dart';
 import 'package:page_view_indicators/page_view_indicators.dart';
 
 class Onboard extends StatefulWidget {
@@ -12,18 +11,28 @@ class Onboard extends StatefulWidget {
 }
 
 class _OnboardState extends State<Onboard> {
-
-
   final PageController pageController = PageController();
   final _currentPageNotifier = ValueNotifier<int>(0);
 
   final List<Widget> pages = [
     OnboardPage(
-        title1: "Добро пожаловать в Кино", title2: "24", message: "Вы сможете наслаждаться кинематографическими шедеврами в любое время!", size: 38.v),
+        title1: "Добро пожаловать в Кино",
+        title2: "24",
+        message:
+            "Вы сможете наслаждаться кинематографическими шедеврами в любое время!",
+        size: 38.v),
     OnboardPage(
-        title1: "Никаких ", title2: "очередей", message: "Авторизуйтесь, чтобы покупать билеты без лишних усилий в несколько нажатий!", size: 82.v),
+        title1: "Никаких ",
+        title2: "очередей",
+        message:
+            "Авторизуйтесь, чтобы покупать билеты без лишних усилий в несколько нажатий!",
+        size: 82.v),
     OnboardPage(
-        title1: "В бар ", title2: "заранее", message: "Закажи еду и напитки вместе с билетом и забери свежий заказ перед началом сеансом!", size: 82.v),
+        title1: "В бар ",
+        title2: "заранее",
+        message:
+            "Закажи еду и напитки вместе с билетом и забери свежий заказ перед началом сеансом!",
+        size: 82.v),
   ];
 
   int currentPageIndex = 0;
@@ -45,8 +54,7 @@ class _OnboardState extends State<Onboard> {
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
-    return
-      BlocListener<AuthenticationBloc, AuthenticationState>(
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is AuthSuccessState) {
             GoRouter.of(context).go(AppRoutes.homepage);
@@ -56,8 +64,7 @@ class _OnboardState extends State<Onboard> {
             context.showsnackbar(title: 'Что-то пошло не так!');
           }
         },
-        child:
-        SafeArea(
+        child: SafeArea(
           child: Scaffold(
             extendBody: true,
             extendBodyBehindAppBar: true,
@@ -130,7 +137,8 @@ class _OnboardState extends State<Onboard> {
                                             curve: Curves.ease);
                                       }
                                     } else {
-                                      GoRouter.of(context).push(AppRoutes.authReg);
+                                      GoRouter.of(context)
+                                          .push(AppRoutes.authReg);
                                     }
                                   });
                             })),

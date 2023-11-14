@@ -28,11 +28,6 @@ class CustomTextStyles {
         fontWeight: FontWeight.w600,
       );
 
-  static get titleMediumLatoOnError =>
-      theme.textTheme.titleMedium!.openSans.copyWith(
-        color: theme.colorScheme.onError,
-      );
-
   static get appBarActiveSemiBold =>
       theme.textTheme.headlineLarge!.openSans.copyWith(
         color: theme.colorScheme.primary,
@@ -53,8 +48,7 @@ class CustomTextStyles {
         fontWeight: FontWeight.w600,
       );
 
-  static get BoldBlack14 =>
-      theme.textTheme.headlineLarge!.openSans.copyWith(
+  static get BoldBlack14 => theme.textTheme.headlineLarge!.openSans.copyWith(
         color: appTheme.black,
         fontSize: 14.fSize,
         fontWeight: FontWeight.w800,
@@ -66,14 +60,9 @@ class CustomTextStyles {
         fontSize: 14.fSize,
       );
 
-  static get RegularBlack12 =>
-      theme.textTheme.headlineLarge!.openSans.copyWith(
+  static get RegularBlack12 => theme.textTheme.headlineLarge!.openSans.copyWith(
         color: appTheme.black,
         fontSize: 12.fSize,
-      );
-
-  static get bodyLarge => theme.textTheme.bodyLarge!.copyWith(
-        color: appTheme.white,
       );
 
   static get bodyLargeWhite => theme.textTheme.bodyLarge!.copyWith(
@@ -90,10 +79,6 @@ class CustomTextStyles {
         color: appTheme.black.withOpacity(0.5),
       );
 
-  static get bodyMediumLight => theme.textTheme.bodyMedium!.copyWith(
-        fontWeight: FontWeight.w300,
-      );
-
   static get bodyMediumPrimary => theme.textTheme.bodyMedium!.copyWith(
         color: theme.colorScheme.primary,
       );
@@ -101,8 +86,6 @@ class CustomTextStyles {
   static get bodyMediumWhite => theme.textTheme.bodyMedium!.copyWith(
         color: appTheme.white.withOpacity(0.7),
       );
-
-  static get bodyMedium_1 => theme.textTheme.bodyMedium!;
 
   static get bodySmallWhiteLight => theme.textTheme.bodySmall!.copyWith(
         color: appTheme.white,
@@ -113,10 +96,6 @@ class CustomTextStyles {
         color: appTheme.white,
         fontSize: 12.fSize,
         fontWeight: FontWeight.w300,
-      );
-
-  static get bodySmallWhite_1 => theme.textTheme.bodySmall!.copyWith(
-        color: appTheme.white,
       );
 
   static get titleMedium16 => theme.textTheme.titleMedium!.copyWith(
@@ -144,26 +123,21 @@ class CustomTextStyles {
         fontSize: 16.fSize,
       );
 
-  static get titleSmallWhite => theme.textTheme.titleSmall!.copyWith(
-        color: appTheme.white,
-      );
-
   static get titleSmallGray => theme.textTheme.titleSmall!.copyWith(
         color: appTheme.gray7C,
       );
 
   static get amoutSemiBoldOrange20 => theme.textTheme.titleLarge!.copyWith(
         color: theme.colorScheme.primary,
-    fontSize: 20.fSize,
-    fontWeight: FontWeight.w600,
-      );
-  static get amoutSemiBoldWhite20 =>
-      theme.textTheme.titleLarge!.copyWith(
-        color:  appTheme.white,
         fontSize: 20.fSize,
         fontWeight: FontWeight.w600,
       );
 
+  static get amoutSemiBoldWhite20 => theme.textTheme.titleLarge!.copyWith(
+        color: appTheme.white,
+        fontSize: 20.fSize,
+        fontWeight: FontWeight.w600,
+      );
 }
 
 extension on TextStyle {

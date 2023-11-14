@@ -3,12 +3,6 @@ import 'package:kino24/blocs/Auth/bloc/authentication_bloc.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/pages/payment/payment.dart';
 import 'package:kino24/utils/validator.dart';
-import 'package:kino24/widgets/app_bar/appbar_iconbutton.dart';
-import 'package:kino24/widgets/app_bar/appbar_subtitle.dart';
-import 'package:kino24/widgets/app_bar/custom_app_bar.dart';
-import 'package:kino24/widgets/custom_checkbox_button.dart';
-import 'package:kino24/widgets/custom_elevated_button.dart';
-import 'package:kino24/widgets/custom_text_form_field.dart';
 
 class Result extends StatefulWidget {
   final dynamic movieData;

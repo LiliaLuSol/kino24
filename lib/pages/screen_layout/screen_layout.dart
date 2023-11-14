@@ -3,6 +3,7 @@ import 'package:kino24/other/app_export.dart';
 
 class ScreenLayout extends StatelessWidget {
   final Widget child;
+
   const ScreenLayout({super.key, required this.child});
 
   @override

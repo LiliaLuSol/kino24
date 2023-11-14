@@ -69,6 +69,7 @@ extension IconButtonStyleHelper on CustomIconButton {
           width: 2.h,
         ),
       );
+
   static BoxDecoration get outlineGray => BoxDecoration(
         borderRadius: BorderRadius.circular(10.h),
         border: Border.all(
@@ -76,13 +77,15 @@ extension IconButtonStyleHelper on CustomIconButton {
           width: 1.h,
         ),
       );
+
   static BoxDecoration get outlineWhite => BoxDecoration(
-    borderRadius: BorderRadius.circular(10.h),
-    border: Border.all(
-      color: appTheme.white,
-      width: 1.h,
-    ),
-  );
+        borderRadius: BorderRadius.circular(10.h),
+        border: Border.all(
+          color: appTheme.white,
+          width: 1.h,
+        ),
+      );
+
   static BoxDecoration get fillWhiteA => BoxDecoration(
         color: appTheme.white,
         borderRadius: BorderRadius.circular(10.h),

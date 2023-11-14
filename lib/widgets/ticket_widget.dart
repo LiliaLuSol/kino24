@@ -2,16 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kino24/other/app_export.dart';
 
 class TicketWidget extends StatelessWidget {
-  final String movieTitle;
-  final String hall;
-  final String format;
-  final String seat;
-
   TicketWidget({
-    required this.movieTitle,
-    required this.hall,
-    required this.format,
-    required this.seat,
+    super.key,
   });
 
   @override

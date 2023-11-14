@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/pages/descriptiononfilm/descriptiononfilm.dart';
-import 'package:kino24/widgets/app_bar/appbar_image.dart';
-import 'package:kino24/widgets/app_bar/appbar_subtitle_2.dart';
-import 'package:kino24/widgets/app_bar/custom_app_bar.dart';
 import 'package:kino24/main.dart';
 
 class Homepage extends StatefulWidget {

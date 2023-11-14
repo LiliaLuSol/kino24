@@ -8,6 +8,7 @@ class ThemeState extends Equatable {
 
   @override
   List<Object?> get props => [themeType];
+
   ThemeState copyWith({String? themeType}) {
     return ThemeState(themeType: themeType ?? this.themeType);
   }

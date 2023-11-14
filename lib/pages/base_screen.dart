@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/pages/profile/profile.dart';

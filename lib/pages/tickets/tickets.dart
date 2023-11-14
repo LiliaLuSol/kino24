@@ -1,10 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kino24/main.dart';
 import 'package:kino24/other/app_export.dart';
-import 'package:kino24/widgets/app_bar/appbar_subtitle.dart';
-import 'package:kino24/widgets/app_bar/custom_app_bar.dart';
-import 'package:kino24/widgets/ticket_widget.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class Tickets extends StatefulWidget {

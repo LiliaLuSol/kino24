@@ -1,11 +1,6 @@
 import 'package:kino24/blocs/Auth/bloc/authentication_bloc.dart';
 import 'package:kino24/main.dart';
 
-import 'package:kino24/widgets/app_bar/appbar_subtitle.dart';
-import 'package:kino24/widgets/app_bar/custom_app_bar.dart';
-import 'package:kino24/widgets/custom_elevated_button.dart';
-import 'package:kino24/widgets/custom_switch.dart';
-import 'package:kino24/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:kino24/other/app_export.dart';
 
@@ -20,14 +15,14 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
   final _emailcontroller = TextEditingController();
   final emailFocusNode = FocusNode();
 
-  String? getEmail(){
-      final currentUser = supabase.auth.currentUser;
-      if (currentUser != null) {
-        final email = currentUser.email!;
-        return email;
-      } else {
-        return "Ваш email скоро здесь появится...";
-      }
+  String? getEmail() {
+    final currentUser = supabase.auth.currentUser;
+    if (currentUser != null) {
+      final email = currentUser.email!;
+      return email;
+    } else {
+      return "Ваш email скоро здесь появится...";
+    }
   }
 
   @override
@@ -107,7 +102,6 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
                                                 TextInputType.emailAddress,
                                             enableInteractiveSelection: false,
                                             enabled: false,
-
                                           ),
                                           SizedBox(height: 16.v),
                                           GestureDetector(

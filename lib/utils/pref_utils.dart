@@ -15,7 +15,7 @@ class PrefUtils {
     print('SharedPreference Initialized');
   }
 
-  ///will clear all the data stored in preference
+  //очистка
   void clearPreferencesData() async {
     _sharedPreferences!.clear();
   }
