@@ -86,27 +86,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
               ),
               textAlign: TextAlign.left,
             ),
-            // AppbarSubtitle2(
-            //   text: "lbl_lilia".tr,
-            //   align: TextAlign.end,
-            //   margin: EdgeInsets.only(
-            //     left: 155.h,
-            //     top: 20.v,
-            //     bottom: 5.v,
-            //   ),
-            // ),
           ),
-          actions: [
-            AppbarSubtitle2(
-              text: "Привет,\nUser",
-              margin: EdgeInsets.fromLTRB(15.h, 17.v, 1.h, 24.v),
-              align: TextAlign.right,
-            ),
-            AppbarImage(
-              imagePath: ImageConstant.imgRectangle11,
-              margin: EdgeInsets.fromLTRB(16.h, 5.v, 16.h, 5.v),
-            ),
-          ],
           styleType: Style.bgFill,
         ),
         body: Container(

@@ -67,16 +67,6 @@ class GoogleAuthLoadingState extends AuthenticationState {
   List<Object?> get props => [];
 }
 
-class YandexAuthLoadingState extends AuthenticationState {
-  @override
-  List<Object?> get props => [];
-}
-
-class WKAuthLoadingState extends AuthenticationState {
-  @override
-  List<Object?> get props => [];
-}
-
 class AuthSuccessState extends AuthenticationState {
   @override
   List<Object?> get props => [];

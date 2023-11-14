@@ -29,6 +29,8 @@ class CustomTextFormField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.onSubmit,
+    this.enableInteractiveSelection,
+    this.enabled,
   }) : super(
           key: key,
         );
@@ -57,6 +59,8 @@ class CustomTextFormField extends StatelessWidget {
   final InputBorder? borderDecoration;
   final Color? fillColor;
   final bool? filled;
+  final bool? enableInteractiveSelection;
+  final bool? enabled;
   final FormFieldValidator<String>? validator;
 
   @override
@@ -88,6 +92,8 @@ class CustomTextFormField extends StatelessWidget {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validator,
           textCapitalization: TextCapitalization.sentences,
+          enableInteractiveSelection: enableInteractiveSelection,
+          enabled: enabled,
         ),
       );
 

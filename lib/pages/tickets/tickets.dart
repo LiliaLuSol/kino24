@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/widgets/app_bar/appbar_subtitle.dart';
 import 'package:kino24/widgets/app_bar/custom_app_bar.dart';
+import 'package:kino24/widgets/ticket_widget.dart';
+import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class Tickets extends StatefulWidget {
   const Tickets({super.key});
@@ -12,20 +14,6 @@ class Tickets extends StatefulWidget {
 }
 
 class _TicketsState extends State<Tickets> with TickerProviderStateMixin {
-  late final TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -38,8 +26,7 @@ class _TicketsState extends State<Tickets> with TickerProviderStateMixin {
               leadingWidth: double.maxFinite,
               title: Padding(
                   padding: EdgeInsets.only(left: 16.h),
-                  child: AppbarSubtitle(
-                      text: "Ваши билеты")),
+                  child: AppbarSubtitle(text: "Ваши билеты")),
               styleType: Style.bgFill,
             ),
             body: Container(
@@ -63,52 +50,107 @@ class _TicketsState extends State<Tickets> with TickerProviderStateMixin {
                       ),
                       Divider(
                           height: 1, thickness: 0.8, color: appTheme.whiteP70),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(16.h, 16.v, 16.h, 16.v),
-                        child: SizedBox(
-                          height: 27.v,
-                          width: 359.h,
-                          child: TabBar(
-                              controller: _tabController,
-                              labelPadding: EdgeInsets.zero,
-                              labelColor: appTheme.white,
-                              labelStyle: TextStyle(
-                                fontSize: 16.fSize,
-                                fontFamily: 'Open Sans',
-                                fontWeight: FontWeight.w400,
-                              ),
-                              unselectedLabelColor: appTheme.white,
-                              unselectedLabelStyle: TextStyle(
-                                fontSize: 16.fSize,
-                                fontFamily: 'Open Sans',
-                                fontWeight: FontWeight.w400,
-                              ),
-                              indicator: BoxDecoration(
-                                color: theme.colorScheme.primaryContainer,
-                                borderRadius: BorderRadius.circular(
-                                  12.h,
-                                ),
-                              ),
-                              tabs: const [
-                                Tab(
-                                  child: Text(
-                                    "активные",
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 16.h, right: 16.h),
+                          child: ListView.builder(
+                            itemBuilder: (_, __) {
+                              return Container(
+                                height: 200.v,
+                                width: 353.h,
+                                margin: EdgeInsets.symmetric(vertical: 16.v),
+                                child: CustomPaint(
+                                  painter: TicketPainter(
+                                    borderColor: Colors.black,
+                                    bgColor: appTheme.white,
+                                  ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('DEA-HYD',
+                                                style: CustomTextStyles
+                                                    .bodyLarge),
+                                            Text('BH07',
+                                                style: CustomTextStyles
+                                                    .bodyLarge),
+                                            Text('\$140',
+                                                style: CustomTextStyles
+                                                    .bodyLarge),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('May 30, 2022',
+                                                style: CustomTextStyles
+                                                    .bodyLarge),
+                                            Text("|"),
+                                            Text('May 30, 2022',
+                                                style: CustomTextStyles
+                                                    .bodyLarge),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('10:40AM',
+                                                style: CustomTextStyles
+                                                    .bodyLarge),
+                                            Text("|"),
+                                            Text('1h 30m',
+                                                style: CustomTextStyles
+                                                    .bodyLarge),
+                                          ],
+                                        ),
+                                        const Spacer(),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              height: 30.v,
+                                              width: 100.h,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(10),
+                                                color: Colors.black
+                                                    .withOpacity(0.2),
+                                                border: Border.all(
+                                                  color: Colors.black
+                                                      .withOpacity(0.5),
+                                                ),
+                                              ),
+                                              child:Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 2,
+                                                ),
+                                                child: SfBarcodeGenerator(value: 'www.syncfusion.com',symbology: Code93()))
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                Tab(
-                                  child: Text(
-                                    "история",
-                                  ),
-                                ),
-                              ]),
+                              );
+                            },
+                            itemCount: 6,
+                          ),
                         ),
                       ),
-                      Expanded(
-                          child: Padding(
-                              padding: EdgeInsets.only(left: 16.h, right: 16.h),
-                              child: TabBarView(
-                                  controller: _tabController,
-                                  children: <Widget>[Container()])))
+                      SizedBox(height: 81.h),
                     ])))));
   }
 }

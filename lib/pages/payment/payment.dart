@@ -7,8 +7,26 @@ import 'package:kino24/widgets/custom_elevated_button.dart';
 
 class Payment extends StatefulWidget {
   final dynamic movieData;
+  final dynamic selectedTikets;
+  final dynamic selectedfood;
+  final int hall;
+  final int totalAmoutTickets;
+  final int totalAmoutFood;
+  final String? selectedDate;
+  final String? selectedTime;
+  final String email;
 
-  const Payment({super.key, required this.movieData});
+  const Payment(
+      {super.key,
+      required this.movieData,
+      required this.hall,
+      required this.selectedDate,
+      required this.selectedTime,
+      required this.selectedTikets,
+      required this.totalAmoutTickets,
+      required this.totalAmoutFood,
+      required this.selectedfood,
+      required this.email});
 
   @override
   _PaymentState createState() => _PaymentState();
@@ -109,36 +127,63 @@ class _PaymentState extends State<Payment> {
                                               Text("Зал:",
                                                   style: CustomTextStyles
                                                       .titleMedium16),
-                                              Text(
-                                                widget.movieData["formats"],
-                                                style: CustomTextStyles
-                                                    .bodyLargeWhite,
-                                              ),
+                                              RichText(
+                                                  text: TextSpan(children: [
+                                                TextSpan(
+                                                    text: "Зал: ",
+                                                    style: CustomTextStyles
+                                                        .bodyLargeWhite),
+                                                TextSpan(
+                                                    text:
+                                                        widget.hall.toString(),
+                                                    style: CustomTextStyles
+                                                        .bodyLargeWhite)
+                                              ])),
                                               SizedBox(height: 16.v),
                                               Text("Места:",
                                                   style: CustomTextStyles
                                                       .titleMedium16),
-                                              Text(
-                                                widget.movieData["formats"],
-                                                style: CustomTextStyles
-                                                    .bodyLargeWhite,
-                                              ),
+                                               Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: widget
+                                                        .selectedTikets
+                                                        .map<Widget>((seat) =>
+                                                            buildTextRow(seat
+                                                                .toString()))
+                                                        .toList(),
+                                                  ),
                                               SizedBox(height: 16.v),
                                               Text("Онлайн-бар:",
                                                   style: CustomTextStyles
-                                                      .titleMedium16),
-                                              Text(
-                                                widget.movieData["formats"],
-                                                style: CustomTextStyles
-                                                    .bodyLargeWhite,
-                                                maxLines: 3,
-                                              ),
+                                                      .titleMedium16),Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: widget
+                                                        .selectedfood
+                                                        .map<Widget>((seat) =>
+                                                            buildTextRow(seat
+                                                                .toString()))
+                                                        .toList(),
+                                                  ),
                                               SizedBox(height: 16.v),
                                               Text("Email:",
                                                   style: CustomTextStyles
                                                       .titleMedium16),
                                               Text(
-                                                widget.movieData["formats"],
+                                                widget.email,
                                                 style: CustomTextStyles
                                                     .bodyLargeOrage,
                                                 maxLines: 3,
@@ -147,11 +192,21 @@ class _PaymentState extends State<Payment> {
                                               Text("К оплате:",
                                                   style: CustomTextStyles
                                                       .titleMedium16),
-                                              Text(
-                                                widget.movieData["formats"],
-                                                style: CustomTextStyles
-                                                    .bodyLargeWhite,
-                                                maxLines: 3,
+                                              RichText(
+                                                text: TextSpan(children: [
+                                                  TextSpan(
+                                                      text: (widget
+                                                                  .totalAmoutFood +
+                                                              widget
+                                                                  .totalAmoutTickets)
+                                                          .toString(),
+                                                      style: CustomTextStyles
+                                                          .bodyLargeWhite),
+                                                  TextSpan(
+                                                      text: " руб.",
+                                                      style: CustomTextStyles
+                                                          .bodyLargeWhite)
+                                                ]),
                                               ),
                                               SizedBox(height: 16.v),
                                               Text(
@@ -213,5 +268,21 @@ class _PaymentState extends State<Payment> {
                                             ]))
                                   ])))
                     ])))));
+  }
+
+  Widget buildTextRow(String text) {
+    List<String> splitText = text.split('  ');
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        for (var str in splitText)
+          Column(children: [
+            Text(
+              str.length > 19 ? str.substring(0, 18) + "..." : str,
+              style: CustomTextStyles.bodyLargeWhite,
+            ),
+          ])
+      ],
+    );
   }
 }

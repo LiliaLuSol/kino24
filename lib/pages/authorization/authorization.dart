@@ -58,7 +58,7 @@ class _AuthorizationState extends State<Authorization>
   @override
   Widget build(BuildContext context) {
     AuthenticationBloc blocProvider =
-        BlocProvider.of<AuthenticationBloc>(context);
+    BlocProvider.of<AuthenticationBloc>(context);
     mediaQueryData = MediaQuery.of(context);
     return SafeArea(
         child: GestureDetector(
@@ -103,20 +103,20 @@ class _AuthorizationState extends State<Authorization>
                                   SizedBox(height: 34.v),
                                   Padding(
                                       padding:
-                                          EdgeInsets.only(left: 4.h, top: 9.v),
+                                      EdgeInsets.only(left: 4.h, top: 9.v),
                                       child: Text("Войти",
                                           style:
-                                              theme.textTheme.headlineLarge)),
+                                          theme.textTheme.headlineLarge)),
                                   Padding(
                                       padding:
-                                          EdgeInsets.only(left: 4.h, top: 37.v),
+                                      EdgeInsets.only(left: 4.h, top: 37.v),
                                       child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             Text("Введите ваш email",
                                                 style:
-                                                    theme.textTheme.bodyMedium),
+                                                theme.textTheme.bodyMedium),
                                             SizedBox(height: 4.v),
                                             CustomTextFormField(
                                               controller: _emailcontroller,
@@ -126,10 +126,10 @@ class _AuthorizationState extends State<Authorization>
                                                   color: Colors.black),
                                               hintText: "example@gmail.com",
                                               textInputType:
-                                                  TextInputType.emailAddress,
+                                              TextInputType.emailAddress,
                                               validator: (value) {
                                                 return !Validators.isValidEmail(
-                                                        value!)
+                                                    value!)
                                                     ? "Введите действительный Email"
                                                     : null;
                                               },
@@ -144,106 +144,110 @@ class _AuthorizationState extends State<Authorization>
                                           ])),
                                   Padding(
                                       padding:
-                                          EdgeInsets.only(left: 4.h, top: 22.v),
+                                      EdgeInsets.only(left: 4.h, top: 22.v),
                                       child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             Text("Введите ваш пароль",
                                                 style:
-                                                    theme.textTheme.bodyMedium),
+                                                theme.textTheme.bodyMedium),
                                             SizedBox(height: 3.v),
                                             BlocBuilder<AuthenticationBloc,
-                                                    AuthenticationState>(
+                                                AuthenticationState>(
                                                 builder: (context, state) {
-                                              return CustomTextFormField(
-                                                controller: _passcontroller,
-                                                focusNode:
+                                                  return CustomTextFormField(
+                                                    controller: _passcontroller,
+                                                    focusNode:
                                                     inputfieldoneFocusNode,
-                                                autofocus: false,
-                                                textStyle: TextStyle(
-                                                    color: Colors.black),
-                                                textInputAction:
+                                                    autofocus: false,
+                                                    textStyle: TextStyle(
+                                                        color: Colors.black),
+                                                    textInputAction:
                                                     TextInputAction.done,
-                                                hintText: "Password",
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    isPasswordValid =
-                                                        value.length >= 6;
-                                                  });
-                                                },
-                                                suffix: InkWell(
-                                                    onTap: () {
-                                                      context
-                                                          .read<
-                                                              AuthenticationBloc>()
-                                                          .add(ChangePasswordVisibilityEvent(
-                                                              value: !state
-                                                                  .isShowPassword));
+                                                    hintText: "Password",
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        isPasswordValid =
+                                                            value.length >= 6;
+                                                      });
                                                     },
-                                                    child: Container(
-                                                        margin:
+                                                    suffix: InkWell(
+                                                        onTap: () {
+                                                          context
+                                                              .read<
+                                                              AuthenticationBloc>()
+                                                              .add(
+                                                              ChangePasswordVisibilityEvent(
+                                                                  value: !state
+                                                                      .isShowPassword));
+                                                        },
+                                                        child: Container(
+                                                            margin:
                                                             EdgeInsets.fromLTRB(
                                                                 30.h,
                                                                 21.v,
                                                                 18.h,
                                                                 22.v),
-                                                        child: CustomImageView(
-                                                          svgPath: state
+                                                            child: CustomImageView(
+                                                              svgPath: state
                                                                   .isShowPassword
-                                                              ? ImageConstant
+                                                                  ? ImageConstant
                                                                   .imgEye
-                                                              : ImageConstant
+                                                                  : ImageConstant
                                                                   .imgEye,
-                                                        ))),
-                                                suffixConstraints:
+                                                            ))),
+                                                    suffixConstraints:
                                                     BoxConstraints(
                                                         maxHeight: 56.v),
-                                                obscureText:
+                                                    obscureText:
                                                     // state.isShowPassword,
                                                     state.isShowPassword,
-                                                validator: (value) {
-                                                  return value!.length < 6
-                                                      ? "Введите действительный пароль"
-                                                      : null;
-                                                },
-                                              );
-                                            })
+                                                    validator: (value) {
+                                                      return value!.length < 6
+                                                          ? "Введите действительный пароль"
+                                                          : null;
+                                                    },
+                                                  );
+                                                })
                                           ])),
                                   Spacer(),
-                                  BlocBuilder<AuthenticationBloc,
-                                      AuthenticationState>(
-                                    builder: (context, state) {
-                                      return CustomElevatedButton(
-                                        text: "Войти",
-                                        margin: EdgeInsets.only(left: 2.h),
-                                        buttonStyle: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              theme.colorScheme.primary,
-                                        ),
-                                        onTap: isEmailValid && isPasswordValid
-                                            ? () {
-                                                BlocProvider.of<
-                                                            AuthenticationBloc>(
-                                                        context)
-                                                    .add(EmailSignInAuthEvent(
-                                                        _emailcontroller.text,
-                                                        _passcontroller.text));
-                                                GoRouter.of(context)
-                                                    .push(AppRoutes.homepage);
-                                              }
-                                            : null,
-                                      );
+                                  BlocListener<AuthenticationBloc, AuthenticationState>(
+                                    listener: (context, state) {
+                                      if (state is AuthSuccessState) {
+                                        GoRouter.of(context).push(AppRoutes.homepage);
+                                      } else if (state is AuthErrorState) {
+                                        context.showsnackbar(title: 'Неверный email или пароль!');
+                                      }
                                     },
+                                    child: CustomElevatedButton(
+                                      text: "Войти",
+                                      margin: EdgeInsets.only(left: 2.h),
+                                      buttonStyle: isEmailValid && isPasswordValid
+                                          ? ElevatedButton.styleFrom(
+                                          backgroundColor: theme.colorScheme.primary)
+                                          : CustomButtonStyles.fillGray,
+                                      onTap: isEmailValid && isPasswordValid
+                                          ? () {
+                                        if (_formKey.currentState!.validate()) {
+                                          BlocProvider.of<AuthenticationBloc>(context)
+                                              .add(EmailSignInAuthEvent(
+                                            _emailcontroller.text,
+                                            _passcontroller.text,
+                                          ));
+                                        }
+                                      }
+                                          : null,
+                                    ),
                                   ),
                                   Padding(
                                       padding:
-                                          EdgeInsets.only(left: 3.h, top: 48.v),
+                                      EdgeInsets.only(left: 3.h, top: 48.v),
                                       child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             Padding(
                                                 padding: EdgeInsets.only(
@@ -265,14 +269,14 @@ class _AuthorizationState extends State<Authorization>
                                                     child: Divider(
                                                         thickness: 0.7,
                                                         color:
-                                                            appTheme.whiteP70)))
+                                                        appTheme.whiteP70)))
                                           ])),
                                   Padding(
                                       padding: EdgeInsets.only(
                                           left: 4.h, top: 20.v, right: 5.h),
                                       child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             CustomIconButton(
                                               height: 56.v,
@@ -285,8 +289,6 @@ class _AuthorizationState extends State<Authorization>
                                               decoration: IconButtonStyleHelper
                                                   .fillWhiteA,
                                               onTap: () {
-                                                // blocProvider.add(
-                                                //     const YandexAuthEvent());
                                                 context.showsnackbar(
                                                     title: 'Скоро будет!',
                                                     color: Colors.grey);
@@ -309,6 +311,9 @@ class _AuthorizationState extends State<Authorization>
                                               onTap: () {
                                                 blocProvider.add(
                                                     const GoogleAuthEvent());
+                                                context.showsnackbar(
+                                                    title:
+                                                    'Что-то пошло не так!');
                                               },
                                               child: CustomImageView(
                                                 svgPath: ImageConstant
@@ -324,18 +329,16 @@ class _AuthorizationState extends State<Authorization>
                                                     left: 42.h,
                                                     right: 42.h),
                                                 decoration:
-                                                    IconButtonStyleHelper
-                                                        .fillWhiteA,
+                                                IconButtonStyleHelper
+                                                    .fillWhiteA,
                                                 onTap: () {
-                                                  // blocProvider
-                                                  //     .add(const WKAuthEvent());
                                                   context.showsnackbar(
                                                       title: 'Скоро будет!',
                                                       color: Colors.grey);
                                                 },
                                                 child: CustomImageView(
                                                   svgPath:
-                                                      ImageConstant.imgUilvk,
+                                                  ImageConstant.imgUilvk,
                                                 ))
                                           ])),
                                   SizedBox(height: 34.v),

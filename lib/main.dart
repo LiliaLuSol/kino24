@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:kino24/blocs/Prof/bloc/profile_bloc.dart';
 import 'package:kino24/other/app_export.dart';
 import 'package:kino24/blocs/Auth/bloc/authentication_bloc.dart';
 import 'package:kino24/utils/bloc_observer.dart';

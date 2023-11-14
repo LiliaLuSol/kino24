@@ -18,76 +18,23 @@ class SelectSeats extends StatefulWidget {
 }
 
 class _SelectSeatsState extends State<SelectSeats> {
-  Widget buildMoviesGrid(List<dynamic> movieList) {
-    List<bool> selectedDates =
-        List.generate(movieList.length, (index) => false);
-
-    void updateSelectedDate(int index) {
-      setState(() {
-        for (int i = 0; i < selectedDates.length; i++) {
-          selectedDates[i] = i == index;
-        }
-      });
-    }
-
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 200,
-        childAspectRatio: 1,
-        crossAxisSpacing: 16.h,
-        mainAxisSpacing: 16.h,
-      ),
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      itemCount: movieList.length,
-      itemBuilder: (BuildContext ctx, index) {
-        String dateStr = movieList[index]["date"];
-        DateTime dateTime = DateTime.parse(dateStr);
-        String formattedDate = DateFormat.yMMMMd('ru').format(dateTime);
-        // return Wrap(
-        //     spacing: 8.0,
-        //     children: List.generate(movieList.length, (index) {
-              return
-                // ChoiceChip(
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 13.h, vertical: 1.v),
-                  decoration: AppDecoration.fillPrimaryContainer
-                      .copyWith(borderRadius: BorderRadiusStyle.roundedBorder12),
-                  alignment: Alignment.center,
-                  child:
-                // backgroundColor: theme.colorScheme.secondary,
-                // selectedColor: theme.colorScheme.primary,
-                // label:
-                Text(
-                    formattedDate.substring(0, formattedDate.indexOf(' 202')),
-                    style: CustomTextStyles.bodyLargeWhite),
-                // onSelected: (isSelected) {
-                //   updateSelectedDate(index);
-                // },
-                // selected: selectedDates[index],
-              );
-            // }));
-      },
-    );
-  }
+  int DateIndex = 0;
+  int TimeIndex = 0;
+  int hall = 0;
+  String? selectedDate;
+  String? selectedTime;
+  int totalAmountTickets = 0;
 
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
 
-    Future<dynamic> getDateSelectSeats() async {
-      List<dynamic> moviesList = await supabase
-          .from("selectmovie")
-          .select<List<dynamic>>()
-          .eq("movie_id", widget.movieData["movie_id"]);
-      return moviesList;
-    }
-
     Future<dynamic> getDateShow() async {
       List<dynamic> moviesList = await supabase
           .from("Showtimes_date")
           .select<List<dynamic>>()
-          .eq("movie_id", widget.movieData["movie_id"]);
+          .eq("movie_id", widget.movieData["movie_id"])
+          .limit(7);
       return moviesList;
     }
 
@@ -95,7 +42,16 @@ class _SelectSeatsState extends State<SelectSeats> {
       List<dynamic> moviesList = await supabase
           .from("Showtimes_time")
           .select<List<dynamic>>()
-          .eq("movie_id", widget.movieData["movie_id"]);
+          .eq("showtime_date_id", DateIndex);
+      return moviesList;
+    }
+
+    Future<dynamic> getSelectShow() async {
+      List<dynamic> moviesList = await supabase
+          .from("av_seat_show")
+          .select<List<dynamic>>()
+          .eq("id_show_time", TimeIndex)
+          .order("id_seat", ascending: true);
       return moviesList;
     }
 
@@ -148,44 +104,91 @@ class _SelectSeatsState extends State<SelectSeats> {
                             padding: EdgeInsets.symmetric(horizontal: 20.h),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
+                                  SizedBox(height: 16.v),
                                   Expanded(
                                       child: SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
                                           child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 FutureBuilder(
-                                                  future: getDateShow(),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot
-                                                            .connectionState ==
-                                                        ConnectionState.done) {
-                                                      if (snapshot.hasData) {
-                                                        final movie =
-                                                            snapshot.data!;
-                                                        return buildMoviesGrid(
-                                                            movie);
+                                                    future: getDateShow(),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .done) {
+                                                        if (snapshot.hasData) {
+                                                          final movie =
+                                                              snapshot.data!;
+                                                          return buildMoviesGrid(
+                                                              movie);
+                                                        } else {
+                                                          return const Center(
+                                                              child: Text(
+                                                                  "Нет данных"));
+                                                        }
+                                                      } else if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return const Center(
+                                                            child:
+                                                                CircularProgressIndicator());
                                                       } else {
                                                         return const Center(
                                                             child: Text(
-                                                                "Нет данных"));
+                                                                "Произошла ошибка"));
                                                       }
-                                                    } else if (snapshot
-                                                            .connectionState ==
-                                                        ConnectionState
-                                                            .waiting) {
-                                                      return const Center(
-                                                          child:
-                                                              CircularProgressIndicator());
-                                                    } else {
-                                                      return const Center(
-                                                          child: Text(
-                                                              "Произошла ошибка"));
-                                                    }
-                                                  },
-                                                ),
+                                                    })
+                                              ]))),
+                                  SizedBox(height: 12.v),
+                                  Expanded(
+                                      child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                FutureBuilder(
+                                                    future: getTimeShow(),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .done) {
+                                                        if (snapshot.hasData) {
+                                                          final movie =
+                                                              snapshot.data!;
+                                                          return buildMoviesGrid1(
+                                                              movie);
+                                                        } else {
+                                                          return const Center(
+                                                              child: Text(
+                                                                  "Нет данных"));
+                                                        }
+                                                      } else if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return const Center(
+                                                            child:
+                                                                CircularProgressIndicator());
+                                                      } else {
+                                                        return const Center(
+                                                            child: Text(
+                                                                "Произошла ошибка"));
+                                                      }
+                                                    })
                                               ]))),
                                   SizedBox(height: 20.v),
                                 ])),
@@ -224,280 +227,32 @@ class _SelectSeatsState extends State<SelectSeats> {
                                   child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        // Row(
-                                        //     mainAxisAlignment:
-                                        //         MainAxisAlignment
-                                        //             .center,
-                                        //     children: [
-                                        //       CustomImageView(
-                                        //           svgPath:
-                                        //               ImageConstant
-                                        //                   .imgSeat,
-                                        //           height: 24
-                                        //               .adaptSize,
-                                        //           width: 24
-                                        //               .adaptSize),
-                                        //       CustomImageView(
-                                        //           svgPath:
-                                        //               ImageConstant
-                                        //                   .imgSeat,
-                                        //           height: 24
-                                        //               .adaptSize,
-                                        //           width: 24
-                                        //               .adaptSize,
-                                        //           margin: EdgeInsets
-                                        //               .only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //       CustomImageView(
-                                        //           svgPath:
-                                        //               ImageConstant
-                                        //                   .imgSeat,
-                                        //           height: 24
-                                        //               .adaptSize,
-                                        //           width: 24
-                                        //               .adaptSize,
-                                        //           margin: EdgeInsets
-                                        //               .only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //       Opacity(
-                                        //           opacity: 0.3,
-                                        //           child: CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h))),
-                                        //       Opacity(
-                                        //           opacity: 0.3,
-                                        //           child: CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h))),
-                                        //       Opacity(
-                                        //           opacity: 0.3,
-                                        //           child: CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)))
-                                        //     ]),
-                                        // Padding(
-                                        //     padding:
-                                        //         EdgeInsets.only(
-                                        //             left: 35.h,
-                                        //             top: 8.v,
-                                        //             right:
-                                        //                 35.h),
-                                        //     child: Row(
-                                        //         mainAxisAlignment:
-                                        //             MainAxisAlignment
-                                        //                 .center,
-                                        //         children: [
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       22.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       22.h))
-                                        //         ])),
-                                        // Padding(
-                                        //     padding:
-                                        //         EdgeInsets.only(
-                                        //             left: 35.h,
-                                        //             top: 8.v,
-                                        //             right:
-                                        //                 35.h),
-                                        //     child: Row(
-                                        //         mainAxisAlignment:
-                                        //             MainAxisAlignment
-                                        //                 .center,
-                                        //         children: [
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       22.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //           Opacity(
-                                        //               opacity:
-                                        //                   0.3,
-                                        //               child: CustomImageView(
-                                        //                   svgPath: ImageConstant
-                                        //                       .imgSeat,
-                                        //                   height: 24
-                                        //                       .adaptSize,
-                                        //                   width: 24
-                                        //                       .adaptSize,
-                                        //                   margin:
-                                        //                       EdgeInsets.only(left: 4.h))),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       4.h)),
-                                        //           CustomImageView(
-                                        //               svgPath:
-                                        //                   ImageConstant
-                                        //                       .imgSeat,
-                                        //               height: 24
-                                        //                   .adaptSize,
-                                        //               width: 24
-                                        //                   .adaptSize,
-                                        //               margin: EdgeInsets.only(
-                                        //                   left:
-                                        //                       22.h))
-                                        //         ])),
+                                        FutureBuilder(
+                                            future: getSelectShow(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.done) {
+                                                if (snapshot.hasData) {
+                                                  final movie = snapshot.data!;
+                                                  return buildMoviesGrid2(
+                                                      movie);
+                                                } else {
+                                                  return const Center(
+                                                      child:
+                                                          Text("Нет данных"));
+                                                }
+                                              } else if (snapshot
+                                                      .connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return const Center(
+                                                    child:
+                                                        CircularProgressIndicator());
+                                              } else {
+                                                return const Center(
+                                                    child: Text(
+                                                        "Произошла ошибка"));
+                                              }
+                                            }),
                                         SizedBox(height: 46.v),
                                         Divider(
                                             height: 1,
@@ -581,9 +336,9 @@ class _SelectSeatsState extends State<SelectSeats> {
                                   thickness: 0.8,
                                   color: appTheme.whiteP70),
                             ]),
-                            SizedBox(height: 15.v),
+                            SizedBox(height: 16.v),
                             Container(
-                                padding: EdgeInsets.symmetric(vertical: 13.v),
+                                padding: EdgeInsets.symmetric(vertical: 16.v),
                                 decoration: AppDecoration.fillOnPrimary
                                     .copyWith(
                                         borderRadius:
@@ -594,95 +349,281 @@ class _SelectSeatsState extends State<SelectSeats> {
                                     children: [
                                       Text("Ваши места",
                                           style: CustomTextStyles.boldWhite20),
-                                      SizedBox(height: 14.v),
+                                      SizedBox(height: 16.v),
                                       Divider(
                                           height: 1,
                                           thickness: 0.8,
                                           color: appTheme.whiteP70),
+                                      SizedBox(height: 16.v),
                                       Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 20.h,
-                                              top: 20.v,
-                                              right: 20.h),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text("lbl_5_5",
-                                                    style: CustomTextStyles
-                                                        .bodyLargeWhite),
-                                                Text("lbl_390",
-                                                    style: CustomTextStyles
-                                                        .bodyLargeWhite)
-                                              ])),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20.h),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: selectedSeats
+                                                .map((seat) => buildTextRow(
+                                                    seat.toString()))
+                                                .toList(),
+                                          )),
                                     ])),
                             SizedBox(height: 16.v),
                             CustomElevatedButton(
                                 width: 353.h,
                                 text: "Продолжить",
-                                buttonStyle: ElevatedButton.styleFrom(
-                                  backgroundColor: theme.colorScheme.primary,
-                                ),
+                                buttonStyle: !selectedSeats.isEmpty
+                                    ? ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            theme.colorScheme.primary)
+                                    : CustomButtonStyles.fillGray,
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => SelectFood(
-                                          movieData: widget.movieData),
-                                    ),
-                                  );
+                                  !selectedSeats.isEmpty
+                                      ? Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => SelectFood(
+                                                movieData: widget.movieData,
+                                                hall: hall,
+                                                selectedDate: selectedDate,
+                                                selectedTime: selectedTime,
+                                                selectedTikets: selectedSeats,
+                                                totalAmoutTickets:
+                                                    totalAmountTickets),
+                                          ),
+                                        )
+                                      : null;
                                 },
                                 alignment: Alignment.center),
                             SizedBox(height: 16.v),
                           ])))
                     ])))));
   }
+
+  Widget buildMoviesGrid(List<dynamic> movieList) {
+    return GridView.builder(
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 200,
+            childAspectRatio: 0.8,
+            crossAxisSpacing: 16.h,
+            mainAxisSpacing: 16.h,
+            mainAxisExtent: 100.h),
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: movieList.length,
+        itemBuilder: (BuildContext ctx, index) {
+          String dateStr = movieList[index]["date"];
+          DateTime dateTime = DateTime.parse(dateStr);
+          String formattedDate = DateFormat.yMMMMd('ru').format(dateTime);
+          return DateWidget(
+              formattedDate.substring(0, formattedDate.indexOf(' 202')),
+              isSelected: selectedDate == formattedDate, onSelect: () {
+            setState(() {
+              selectedDate = formattedDate;
+              DateIndex = movieList[index]["showtime_date_id"];
+              selectedTime = null;
+              TimeIndex = 0;
+              clearSelections();
+            });
+          });
+        });
+  }
+
+  Widget buildMoviesGrid1(List<dynamic> movieList) {
+    return GridView.builder(
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200,
+          childAspectRatio: 0.8,
+          crossAxisSpacing: 16.h,
+          mainAxisSpacing: 16.h,
+        ),
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: movieList.length,
+        itemBuilder: (BuildContext ctx, index) {
+          String timeStr = movieList[index]["time"];
+          String formattedTime =
+              DateFormat.Hm().format(DateFormat.Hms().parse(timeStr));
+          return TimeWidget(formattedTime,
+              isSelected: selectedTime == formattedTime, onSelect: () {
+            setState(() {
+              selectedTime = formattedTime;
+              TimeIndex = movieList[index]["showtime_time_id"];
+              hall = movieList[index]["theater_hall"];
+              clearSelections();
+            });
+          });
+        });
+  }
+
+  List<dynamic> selectedSeats = [];
+
+  void selectSeat(String seat, int cost) {
+    if (!selectedSeats.contains(seat)) {
+      setState(() {
+        selectedSeats.add(seat);
+        totalAmountTickets += cost;
+      });
+    } else {
+      setState(() {
+        selectedSeats.remove(seat);
+        totalAmountTickets -= cost;
+      });
+    }
+  }
+
+  void clearSelections() {
+    setState(() {
+      selectedSeats.clear();
+    });
+  }
+
+  Widget buildMoviesGrid2(List<dynamic> seatStatusList) {
+    return GridView.builder(
+      shrinkWrap: true,
+      itemCount: seatStatusList.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 9,
+          crossAxisSpacing: 2.h,
+          mainAxisSpacing: 2.h,
+          mainAxisExtent: 35.v),
+      itemBuilder: (BuildContext context, int index) {
+        bool isAvailable = seatStatusList[index]['available'];
+        int row = ((index + 1) ~/ 9) + 1;
+        int column = (index + 1) % 9;
+        if (column == 0) {
+          column = 9;
+        } else {
+          column;
+        }
+        ;
+        int cost = 0;
+        if (row <= 3 ||
+            column == 1 ||
+            column == 2 ||
+            column == 8 ||
+            column == 9) {
+          cost = 390;
+        } else {
+          cost = 420;
+        }
+        String seat = "Ряд $row Место $column  $cost руб.";
+        bool isSelected = selectedSeats.contains(seat);
+        return InkWell(
+          onTap: () {
+            isAvailable ? selectSeat(seat, cost) : null;
+          },
+          child: buildSeatWidget(isAvailable, isSelected),
+        );
+      },
+    );
+  }
+
+  Widget buildSeatWidget(bool isAvailable, bool isSelected) {
+    if (isAvailable) {
+      if (isSelected) {
+        return CustomImageView(
+          svgPath: ImageConstant.imgSeatPrimary,
+          height: 20.adaptSize,
+          width: 20.adaptSize,
+          margin: EdgeInsets.only(left: 4.h),
+        );
+      } else {
+        return CustomImageView(
+          svgPath: ImageConstant.imgSeat,
+          height: 20.adaptSize,
+          width: 20.adaptSize,
+          margin: EdgeInsets.only(left: 4.h),
+        );
+      }
+    } else {
+      return Opacity(
+        opacity: 0.3,
+        child: CustomImageView(
+          svgPath: ImageConstant.imgSeat,
+          height: 20.adaptSize,
+          width: 20.adaptSize,
+          margin: EdgeInsets.only(left: 4.h),
+        ),
+      );
+    }
+  }
+
+  Widget buildTextRow(String text) {
+    List<String> splitText = text.split('  ');
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        for (var str in splitText)
+          Column(children: [
+            Text(
+              str,
+              style: CustomTextStyles.bodyLargeWhite,
+            ),
+          ])
+      ],
+    );
+  }
 }
 
-// Widget buildMoviesGrid(List<dynamic> movieList) {
-//   List<bool> selectedDates = List.generate(movieList.length, (index) => false);
-//
-//   void updateSelectedDate(int index) {
-//     setState(() {
-//       for (int i = 0; i < selectedDates.length; i++) {
-//         selectedDates[i] = i == index;
-//       }
-//     });
-//   }
-//
-//   return GridView.builder(
-//     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-//       maxCrossAxisExtent: 200,
-//       childAspectRatio: 0.8,
-//       crossAxisSpacing: 16.h,
-//       mainAxisSpacing: 16.h,
-//     ),
-//     shrinkWrap: true,
-//     scrollDirection: Axis.horizontal,
-//     itemCount: movieList.length,
-//     itemBuilder: (BuildContext ctx, index) {
-//       String dateStr = movieList[index]["date"];
-//       DateTime dateTime = DateTime.parse(dateStr);
-//       String formattedDate = DateFormat.yMMMMd('ru').format(dateTime);
-//       return Column(children: [
-//         ChoiceChip(
-//         // Container(
-//         //   // padding: EdgeInsets.symmetric(horizontal: 13.h, vertical: 1.v),
-//         //   // decoration: AppDecoration.fillPrimaryContainer
-//         //   //     .copyWith(borderRadius: BorderRadiusStyle.roundedBorder12),
-//         //   alignment: Alignment.center,
-//         //   child:
-//         backgroundColor: Colors.transparent,
-// selectedColor: theme.colorScheme.secondary,
-//          label: Text(formattedDate.substring(0, formattedDate.indexOf(' 202')),
-//               style: CustomTextStyles.bodyLargeWhite),
-//           onSelected: (isSelected) {
-//             updateSelectedDate(index);
-//           },
-//           selected: selectedDates[index],
-//         )
-//       ]);
-//     },
-//   );
-// }
+class DateWidget extends StatelessWidget {
+  final String formattedDate;
+  final bool isSelected;
+  final VoidCallback onSelect;
+
+  DateWidget(this.formattedDate,
+      {required this.isSelected, required this.onSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onSelect,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 5.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadiusStyle.roundedBorder12,
+          color: isSelected
+              ? theme.colorScheme.primary
+              : theme.colorScheme.primaryContainer,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          formattedDate,
+          style: CustomTextStyles.bodyLargeWhite,
+        ),
+      ),
+    );
+  }
+}
+
+class TimeWidget extends StatelessWidget {
+  final String formattedDate;
+  final bool isSelected;
+  final VoidCallback onSelect;
+
+  TimeWidget(this.formattedDate,
+      {required this.isSelected, required this.onSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onSelect,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 5.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadiusStyle.roundedBorder12,
+          color: isSelected
+              ? theme.colorScheme.primary
+              : theme.colorScheme.primaryContainer,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          formattedDate,
+          style: CustomTextStyles.bodyLargeWhite,
+        ),
+      ),
+    );
+  }
+}

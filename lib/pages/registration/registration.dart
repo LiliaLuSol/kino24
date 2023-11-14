@@ -311,18 +311,26 @@ class _RegistrationState extends State<Registration>
                                       text: "Создать аккаунт",
                                       margin:
                                           EdgeInsets.only(left: 3.h, top: 27.v),
-                                      buttonStyle: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            theme.colorScheme.primary,
-                                      ),
+                                      buttonStyle: isEmailValid &&
+                                              isPasswordValid &&
+                                              isConfirmPasswordValid
+                                          ? ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  theme.colorScheme.primary,
+                                            )
+                                          : CustomButtonStyles.fillGray,
                                       onTap: isEmailValid &&
                                               isPasswordValid &&
                                               isConfirmPasswordValid
                                           ? () {
-                                        BlocProvider.of<AuthenticationBloc>(context).add(
-                                          EmailSignUpAuthEvent(_emailcontroller.text,
-                                              _passcontroller.text),
-                                        );
+                                              BlocProvider.of<
+                                                          AuthenticationBloc>(
+                                                      context)
+                                                  .add(
+                                                EmailSignUpAuthEvent(
+                                                    _emailcontroller.text,
+                                                    _passcontroller.text),
+                                              );
                                               GoRouter.of(context)
                                                   .push(AppRoutes.homepage);
                                             }
@@ -365,7 +373,7 @@ class _RegistrationState extends State<Registration>
                                           left: 4.h, top: 20.v, right: 5.h),
                                       child: Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             CustomIconButton(
                                               height: 56.v,
@@ -378,8 +386,6 @@ class _RegistrationState extends State<Registration>
                                               decoration: IconButtonStyleHelper
                                                   .fillWhiteA,
                                               onTap: () {
-                                                // blocProvider.add(
-                                                //     const YandexAuthEvent());
                                                 context.showsnackbar(
                                                     title: 'Скоро будет!',
                                                     color: Colors.grey);
@@ -402,6 +408,9 @@ class _RegistrationState extends State<Registration>
                                               onTap: () {
                                                 blocProvider.add(
                                                     const GoogleAuthEvent());
+                                                context.showsnackbar(
+                                                    title:
+                                                        'Что-то пошло не так!');
                                               },
                                               child: CustomImageView(
                                                 svgPath: ImageConstant
@@ -417,18 +426,16 @@ class _RegistrationState extends State<Registration>
                                                     left: 42.h,
                                                     right: 42.h),
                                                 decoration:
-                                                IconButtonStyleHelper
-                                                    .fillWhiteA,
+                                                    IconButtonStyleHelper
+                                                        .fillWhiteA,
                                                 onTap: () {
-                                                  // blocProvider
-                                                  //     .add(const WKAuthEvent());
                                                   context.showsnackbar(
                                                       title: 'Скоро будет!',
                                                       color: Colors.grey);
                                                 },
                                                 child: CustomImageView(
                                                   svgPath:
-                                                  ImageConstant.imgUilvk,
+                                                      ImageConstant.imgUilvk,
                                                 ))
                                           ])),
                                   SizedBox(height: 33.v),

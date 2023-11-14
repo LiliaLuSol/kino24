@@ -139,9 +139,18 @@ class CustomTextStyles {
         color: appTheme.gray7C,
       );
 
-  static get titleLargePrimary => theme.textTheme.titleLarge!.copyWith(
+  static get amoutSemiBoldOrange20 => theme.textTheme.titleLarge!.copyWith(
         color: theme.colorScheme.primary,
+    fontSize: 20.fSize,
+    fontWeight: FontWeight.w600,
       );
+  static get amoutSemiBoldWhite20 =>
+      theme.textTheme.titleLarge!.copyWith(
+        color:  appTheme.white,
+        fontSize: 20.fSize,
+        fontWeight: FontWeight.w600,
+      );
+
 }
 
 extension on TextStyle {

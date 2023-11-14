@@ -38,7 +38,7 @@ class AuthenticationBloc
       emit(GoogleAuthLoadingState());
       try {
         await _authservice.signInWithGoogle();
-        emit(AuthSuccessState());
+        // emit(AuthSuccessState());
       } catch (e) {
         emit(AuthErrorState(e.toString()));
       }

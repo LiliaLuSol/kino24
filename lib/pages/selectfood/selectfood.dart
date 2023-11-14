@@ -10,14 +10,28 @@ import 'package:kino24/widgets/custom_icon_button.dart';
 
 class SelectFood extends StatefulWidget {
   final dynamic movieData;
+  final dynamic selectedTikets;
+  final int hall;
+  final int totalAmoutTickets;
+  final String? selectedDate;
+  final String? selectedTime;
 
-  const SelectFood({super.key, required this.movieData});
+  const SelectFood(
+      {super.key,
+      required this.movieData,
+      required this.hall,
+      required this.selectedDate,
+      required this.selectedTime,
+      required this.selectedTikets,
+      required this.totalAmoutTickets});
 
   @override
   _SelectFoodState createState() => _SelectFoodState();
 }
 
 class _SelectFoodState extends State<SelectFood> {
+  int totalAmoutFood = 0;
+
   Future<dynamic> getComboList() async {
     List<dynamic> foodList =
         await supabase.from("food").select<List<dynamic>>().eq("type", "Combo");
@@ -57,6 +71,132 @@ class _SelectFoodState extends State<SelectFood> {
         await supabase.from("food").select<List<dynamic>>().eq("type", "Chips");
 
     return foodList;
+  }
+
+  List<int> quantities1 = List.filled(20, 0);
+  List<int> quantities2 = List.filled(20, 0);
+  List<int> quantities3 = List.filled(20, 0);
+  List<int> quantities4 = List.filled(20, 0);
+  List<int> quantities5 = List.filled(20, 0);
+
+  List<dynamic> foodListCombo = [];
+  List<dynamic> foodListPopcorn = [];
+  List<dynamic> foodListDrinks = [];
+  List<dynamic> foodListChips = [];
+  List<dynamic> foodListSweet = [];
+
+  void updateQuantity1(int index, int value) {
+    setState(() {
+      quantities1[index] = (quantities1[index] + value).clamp(0, 99);
+    });
+  }
+
+  void updateQuantity2(int index, int value) {
+    setState(() {
+      quantities2[index] = (quantities2[index] + value).clamp(0, 99);
+    });
+  }
+
+  void updateQuantity3(int index, int value) {
+    setState(() {
+      quantities3[index] = (quantities3[index] + value).clamp(0, 99);
+    });
+  }
+
+  void updateQuantity4(int index, int value) {
+    setState(() {
+      quantities4[index] = (quantities4[index] + value).clamp(0, 99);
+    });
+  }
+
+  void updateQuantity5(int index, int value) {
+    setState(() {
+      quantities5[index] = (quantities5[index] + value).clamp(0, 99);
+    });
+  }
+
+  List<String> name_food1 = [];
+
+  void clearSelections() {
+    setState(() {
+      name_food1.clear();
+    });
+  }
+
+  void calculateTotalCost(
+      List<dynamic> foodListCombo,
+      List<dynamic> foodListPopcorn,
+      List<dynamic> foodListDrinks,
+      List<dynamic> foodListChips,
+      List<dynamic> foodListSweet) {
+    clearSelections();
+    totalAmoutFood = 0;
+    const maxLength = 70;
+    for (int i = 0; i < foodListCombo.length; i++) {
+      if (quantities1[i] > 0) {
+        double totalCost = 0;
+        totalCost += (foodListCombo[i]["cost"] * quantities1[i]);
+        name_food1.add(foodListCombo[i]["name"] + "  " +
+            " х" +
+            quantities1[i].toString() +
+            "  " +
+            totalCost.toInt().toString() +
+            " руб.");
+        totalAmoutFood += totalCost.toInt();
+      }
+    }
+    for (int i = 0; i < foodListPopcorn.length; i++) {
+      if (quantities2[i] > 0) {
+        double totalCost = 0;
+        totalCost += (foodListPopcorn[i]["cost"] * quantities2[i]);
+        name_food1.add(foodListPopcorn[i]["name"] + "   " +
+            " х" +
+            quantities2[i].toString() +
+            "   " +
+            totalCost.toInt().toString() +
+            " руб.");
+        totalAmoutFood += totalCost.toInt();
+      }
+    }
+    for (int i = 0; i < foodListDrinks.length; i++) {
+      if (quantities3[i] > 0) {
+        double totalCost = 0;
+        totalCost += (foodListDrinks[i]["cost"] * quantities3[i]);
+        name_food1.add(foodListDrinks[i]["name"] + "   " +
+            " х" +
+            quantities3[i].toString() +
+            "   " +
+            totalCost.toInt().toString() +
+            " руб.");
+        totalAmoutFood += totalCost.toInt();
+      }
+    }
+    for (int i = 0; i < foodListChips.length; i++) {
+      if (quantities4[i] > 0) {
+        double totalCost = 0;
+        totalCost += (foodListChips[i]["cost"] * quantities4[i]);
+        name_food1.add(foodListChips[i]["name"] + "   " +
+            " х" +
+            quantities4[i].toString() +
+            "   " +
+            totalCost.toInt().toString() +
+            " руб.");
+        totalAmoutFood += totalCost.toInt();
+      }
+    }
+    for (int i = 0; i < foodListSweet.length; i++) {
+      if (quantities5[i] > 0) {
+        double totalCost = 0;
+        totalCost += (foodListSweet[i]["cost"] * quantities5[i]);
+        name_food1.add(foodListSweet[i]["name"] + "   " +
+            " х" +
+            quantities5[i].toString() +
+            "   " +
+            totalCost.toInt().toString() +
+            " руб.");
+        totalAmoutFood += totalCost.toInt();
+      }
+    }
   }
 
   @override
@@ -137,9 +277,6 @@ class _SelectFoodState extends State<SelectFood> {
                                             Text("Комбо-наборы",
                                                 style:
                                                     CustomTextStyles.titleRus),
-                                            // SingleChildScrollView(
-                                            //   scrollDirection: Axis.vertical,
-                                            //   child:
                                             FutureBuilder(
                                               future: getComboList(),
                                               builder: (context, snapshot) {
@@ -149,10 +286,9 @@ class _SelectFoodState extends State<SelectFood> {
                                                           CircularProgressIndicator());
                                                 }
                                                 final food = snapshot.data!;
-                                                return buildFoodGrid(food);
+                                                return buildFoodGrid1(food);
                                               },
                                             ),
-                                            // ),
                                             SizedBox(height: 16.v),
                                             Text("Попкорн",
                                                 style:
@@ -166,7 +302,7 @@ class _SelectFoodState extends State<SelectFood> {
                                                           CircularProgressIndicator());
                                                 }
                                                 final food = snapshot.data!;
-                                                return buildFoodGrid(food);
+                                                return buildFoodGrid2(food);
                                               },
                                             ),
                                             SizedBox(height: 16.v),
@@ -182,7 +318,7 @@ class _SelectFoodState extends State<SelectFood> {
                                                           CircularProgressIndicator());
                                                 }
                                                 final food = snapshot.data!;
-                                                return buildFoodGrid(food);
+                                                return buildFoodGrid3(food);
                                               },
                                             ),
                                             SizedBox(height: 16.v),
@@ -198,7 +334,7 @@ class _SelectFoodState extends State<SelectFood> {
                                                           CircularProgressIndicator());
                                                 }
                                                 final food = snapshot.data!;
-                                                return buildFoodGrid(food);
+                                                return buildFoodGrid4(food);
                                               },
                                             ),
                                             SizedBox(height: 16.v),
@@ -214,7 +350,7 @@ class _SelectFoodState extends State<SelectFood> {
                                                           CircularProgressIndicator());
                                                 }
                                                 final food = snapshot.data!;
-                                                return buildFoodGrid(food);
+                                                return buildFoodGrid5(food);
                                               },
                                             ),
                                             SizedBox(height: 16.v),
@@ -231,7 +367,21 @@ class _SelectFoodState extends State<SelectFood> {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) => Result(
-                                                          movieData: widget.movieData),
+                                                          movieData:
+                                                              widget.movieData,
+                                                          hall: widget.hall,
+                                                          selectedDate: widget
+                                                              .selectedDate,
+                                                          selectedTime: widget
+                                                              .selectedTime,
+                                                          totalAmoutTickets: widget
+                                                              .totalAmoutTickets,
+                                                          selectedTikets: widget
+                                                              .selectedTikets,
+                                                          totalAmoutFood:
+                                                              totalAmoutFood,
+                                                          selectedfood:
+                                                              name_food1),
                                                     ),
                                                   );
                                                 },
@@ -242,77 +392,467 @@ class _SelectFoodState extends State<SelectFood> {
                                   ])))
                     ])))));
   }
-}
 
-Widget buildFoodGrid(List<dynamic> foodList) {
-  return GridView.builder(
-    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-      maxCrossAxisExtent: 200,
-      childAspectRatio: 0.54,
-      crossAxisSpacing: 16.h,
-      mainAxisSpacing: 16.h,
-    ),
-    shrinkWrap: true,
-    itemCount: foodList.length,
-    itemBuilder: (BuildContext ctx, index) {
-      return Container(
-        width: 353.h,
-          padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
-          decoration: AppDecoration.fillOnPrimary
-              .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
-          alignment: Alignment.topCenter,
-          child: Column(
-              children: [
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(foodList[index]["image"]),
-                  fit: BoxFit.cover,
+  Widget buildFoodGrid1(List<dynamic> foodList) {
+    foodListCombo = foodList;
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200,
+          childAspectRatio: 0.54,
+          crossAxisSpacing: 16.h,
+          mainAxisSpacing: 16.h,
+          mainAxisExtent: 432.v),
+      shrinkWrap: true,
+      itemCount: foodList.length,
+      itemBuilder: (BuildContext ctx, index) {
+        return Container(
+            width: 353.h,
+            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
+            decoration: AppDecoration.fillOnPrimary
+                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
+            alignment: Alignment.topCenter,
+            child: Column(children: [
+              SizedBox(height: 16.v),
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(foodList[index]["image"]),
+                    fit: BoxFit.cover,
+                  ),
                 ),
+                height: 130.v,
+                width: 120.v,
               ),
-              height: 130.v,
-              width: 120.v,
-            ),
-            SizedBox(height: 9.v),
-            Text(foodList[index]["name"],
-                style: CustomTextStyles.bodyLargeWhite18,maxLines: 2,textAlign: TextAlign.center,),
-            SizedBox(height: 7.v),
-            SizedBox(
-                width: 309.h,
-                child: Text(foodList[index]["description"],
-                    maxLines: 7,
-                  //  overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: CustomTextStyles.bodySmallWhiteLight)),
-            SizedBox(height: 8.v),
-            RichText(
-                text: TextSpan(children: [
-              TextSpan(
-                  text: foodList[index]["cost"].toString(),
-                  style: CustomTextStyles.bodyLargeWhite18),
-              TextSpan(text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
-            ])),
-            SizedBox(height: 8.v),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              CustomIconButton(
-                  height: 33.adaptSize,
-                  width: 33.adaptSize,
-                  padding: EdgeInsets.all(5.h),
-                  decoration: IconButtonStyleHelper.outlineGray,
-                  child: CustomImageView(
-                      svgPath: ImageConstant.imgIcbaselineminus)),
-              Padding(
-                  padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
-                  child: Text("0", style: CustomTextStyles.bodyLargeWhite18)),
-              CustomIconButton(
-                  height: 33.adaptSize,
-                  width: 33.adaptSize,
-                  margin: EdgeInsets.only(left: 21.h),
-                  padding: EdgeInsets.all(5.h),
-                  child:
-                      CustomImageView(svgPath: ImageConstant.imgIcbaselineplus))
-            ])
-          ]));
-    },
-  );
+              SizedBox(height: 9.v),
+              Text(
+                foodList[index]["name"],
+                style: CustomTextStyles.bodyLargeWhite18,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 7.v),
+              SizedBox(
+                  width: 309.h,
+                  child: Text(foodList[index]["description"],
+                      maxLines: 7,
+                      //  overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: CustomTextStyles.bodySmallWhiteLight)),
+              Spacer(),
+              RichText(
+                  text: TextSpan(children: [
+                TextSpan(
+                    text: foodList[index]["cost"].toString(),
+                    style: CustomTextStyles.bodyLargeWhite18),
+                TextSpan(
+                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
+              ])),
+              SizedBox(height: 8.v),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    padding: EdgeInsets.all(5.h),
+                    decoration: IconButtonStyleHelper.outlineWhite,
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineminus,
+                        color: Colors.white),
+                    onTap: () {
+                      updateQuantity1(index, -1);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+                Padding(
+                    padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
+                    child: Text(quantities1[index].toString(),
+                        style: CustomTextStyles.bodyLargeWhite18)),
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    margin: EdgeInsets.only(left: 21.h),
+                    padding: EdgeInsets.all(5.h),
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineplus),
+                    onTap: () {
+                      updateQuantity1(index, 1);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+              ]),
+              SizedBox(height: 16.v),
+            ]));
+      },
+    );
+  }
+
+  Widget buildFoodGrid2(List<dynamic> foodList) {
+    foodListPopcorn = foodList;
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200,
+          childAspectRatio: 0.54,
+          crossAxisSpacing: 16.h,
+          mainAxisSpacing: 16.h,
+          mainAxisExtent: 432.v),
+      shrinkWrap: true,
+      itemCount: foodList.length,
+      itemBuilder: (BuildContext ctx, index) {
+        return Container(
+            width: 353.h,
+            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
+            decoration: AppDecoration.fillOnPrimary
+                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
+            alignment: Alignment.topCenter,
+            child: Column(children: [
+              SizedBox(height: 16.v),
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(foodList[index]["image"]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                height: 130.v,
+                width: 120.v,
+              ),
+              SizedBox(height: 9.v),
+              Text(
+                foodList[index]["name"],
+                style: CustomTextStyles.bodyLargeWhite18,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 7.v),
+              SizedBox(
+                  width: 309.h,
+                  child: Text(foodList[index]["description"],
+                      maxLines: 7,
+                      //  overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: CustomTextStyles.bodySmallWhiteLight)),
+              Spacer(),
+              RichText(
+                  text: TextSpan(children: [
+                TextSpan(
+                    text: foodList[index]["cost"].toString(),
+                    style: CustomTextStyles.bodyLargeWhite18),
+                TextSpan(
+                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
+              ])),
+              SizedBox(height: 8.v),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    padding: EdgeInsets.all(5.h),
+                    decoration: IconButtonStyleHelper.outlineWhite,
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineminus,
+                        color: Colors.white),
+                    onTap: () {
+                      updateQuantity2(index, -1);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+                Padding(
+                    padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
+                    child: Text(quantities2[index].toString(),
+                        style: CustomTextStyles.bodyLargeWhite18)),
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    margin: EdgeInsets.only(left: 21.h),
+                    padding: EdgeInsets.all(5.h),
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineplus),
+                    onTap: () {
+                      updateQuantity2(index, 1);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+              ]),
+              SizedBox(height: 16.v),
+            ]));
+      },
+    );
+  }
+
+  Widget buildFoodGrid3(List<dynamic> foodList) {
+    foodListDrinks = foodList;
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200,
+          childAspectRatio: 0.54,
+          crossAxisSpacing: 16.h,
+          mainAxisSpacing: 16.h,
+          mainAxisExtent: 432.v),
+      shrinkWrap: true,
+      itemCount: foodList.length,
+      itemBuilder: (BuildContext ctx, index) {
+        return Container(
+            width: 353.h,
+            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
+            decoration: AppDecoration.fillOnPrimary
+                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
+            alignment: Alignment.topCenter,
+            child: Column(children: [
+              SizedBox(height: 16.v),
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(foodList[index]["image"]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                height: 130.v,
+                width: 120.v,
+              ),
+              SizedBox(height: 9.v),
+              Text(
+                foodList[index]["name"],
+                style: CustomTextStyles.bodyLargeWhite18,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 7.v),
+              SizedBox(
+                  width: 309.h,
+                  child: Text(foodList[index]["description"],
+                      maxLines: 7,
+                      //  overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: CustomTextStyles.bodySmallWhiteLight)),
+              Spacer(),
+              RichText(
+                  text: TextSpan(children: [
+                TextSpan(
+                    text: foodList[index]["cost"].toString(),
+                    style: CustomTextStyles.bodyLargeWhite18),
+                TextSpan(
+                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
+              ])),
+              SizedBox(height: 8.v),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    padding: EdgeInsets.all(5.h),
+                    decoration: IconButtonStyleHelper.outlineWhite,
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineminus,
+                        color: Colors.white),
+                    onTap: () {
+                      updateQuantity3(index, -1);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+                Padding(
+                    padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
+                    child: Text(quantities3[index].toString(),
+                        style: CustomTextStyles.bodyLargeWhite18)),
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    margin: EdgeInsets.only(left: 21.h),
+                    padding: EdgeInsets.all(5.h),
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineplus),
+                    onTap: () {
+                      updateQuantity3(index, 1);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+              ]),
+              SizedBox(height: 16.v),
+            ]));
+      },
+    );
+  }
+
+  Widget buildFoodGrid4(List<dynamic> foodList) {
+    foodListChips = foodList;
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200,
+          childAspectRatio: 0.54,
+          crossAxisSpacing: 16.h,
+          mainAxisSpacing: 16.h,
+          mainAxisExtent: 432.v),
+      shrinkWrap: true,
+      itemCount: foodList.length,
+      itemBuilder: (BuildContext ctx, index) {
+        return Container(
+            width: 353.h,
+            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
+            decoration: AppDecoration.fillOnPrimary
+                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
+            alignment: Alignment.topCenter,
+            child: Column(children: [
+              SizedBox(height: 16.v),
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(foodList[index]["image"]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                height: 130.v,
+                width: 120.v,
+              ),
+              SizedBox(height: 9.v),
+              Text(
+                foodList[index]["name"],
+                style: CustomTextStyles.bodyLargeWhite18,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 7.v),
+              SizedBox(
+                  width: 309.h,
+                  child: Text(foodList[index]["description"],
+                      maxLines: 7,
+                      //  overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: CustomTextStyles.bodySmallWhiteLight)),
+              Spacer(),
+              RichText(
+                  text: TextSpan(children: [
+                TextSpan(
+                    text: foodList[index]["cost"].toString(),
+                    style: CustomTextStyles.bodyLargeWhite18),
+                TextSpan(
+                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
+              ])),
+              SizedBox(height: 8.v),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    padding: EdgeInsets.all(5.h),
+                    decoration: IconButtonStyleHelper.outlineWhite,
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineminus,
+                        color: Colors.white),
+                    onTap: () {
+                      updateQuantity4(index, -1);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+                Padding(
+                    padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
+                    child: Text(quantities4[index].toString(),
+                        style: CustomTextStyles.bodyLargeWhite18)),
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    margin: EdgeInsets.only(left: 21.h),
+                    padding: EdgeInsets.all(5.h),
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineplus),
+                    onTap: () {
+                      updateQuantity4(index, 1);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+              ]),
+              SizedBox(height: 16.v),
+            ]));
+      },
+    );
+  }
+
+  Widget buildFoodGrid5(List<dynamic> foodList) {
+    foodListSweet = foodList;
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200,
+          childAspectRatio: 0.54,
+          crossAxisSpacing: 16.h,
+          mainAxisSpacing: 16.h,
+          mainAxisExtent: 432.v),
+      shrinkWrap: true,
+      itemCount: foodList.length,
+      itemBuilder: (BuildContext ctx, index) {
+        return Container(
+            width: 353.h,
+            padding: EdgeInsets.symmetric(horizontal: 21.h, vertical: 8.v),
+            decoration: AppDecoration.fillOnPrimary
+                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder15),
+            alignment: Alignment.topCenter,
+            child: Column(children: [
+              SizedBox(height: 16.v),
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(foodList[index]["image"]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                height: 130.v,
+                width: 120.v,
+              ),
+              SizedBox(height: 9.v),
+              Text(
+                foodList[index]["name"],
+                style: CustomTextStyles.bodyLargeWhite18,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 7.v),
+              SizedBox(
+                  width: 309.h,
+                  child: Text(foodList[index]["description"],
+                      maxLines: 7,
+                      //  overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: CustomTextStyles.bodySmallWhiteLight)),
+              Spacer(),
+              RichText(
+                  text: TextSpan(children: [
+                TextSpan(
+                    text: foodList[index]["cost"].toString(),
+                    style: CustomTextStyles.bodyLargeWhite18),
+                TextSpan(
+                    text: " руб.", style: CustomTextStyles.bodyLargeWhite18),
+              ])),
+              SizedBox(height: 8.v),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    padding: EdgeInsets.all(5.h),
+                    decoration: IconButtonStyleHelper.outlineWhite,
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineminus,
+                        color: Colors.white),
+                    onTap: () {
+                      updateQuantity5(
+                        index,
+                        -1,
+                      );
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+                Padding(
+                    padding: EdgeInsets.only(left: 21.h, top: 5.v, bottom: 5.v),
+                    child: Text(quantities5[index].toString(),
+                        style: CustomTextStyles.bodyLargeWhite18)),
+                CustomIconButton(
+                    height: 33.adaptSize,
+                    width: 33.adaptSize,
+                    margin: EdgeInsets.only(left: 21.h),
+                    padding: EdgeInsets.all(5.h),
+                    child: CustomImageView(
+                        svgPath: ImageConstant.imgIcbaselineplus),
+                    onTap: () {
+                      updateQuantity5(index, 1);
+                      calculateTotalCost(foodListCombo, foodListPopcorn,
+                          foodListDrinks, foodListChips, foodListSweet);
+                    }),
+              ]),
+              SizedBox(height: 16.v),
+            ]));
+      },
+    );
+  }
 }
