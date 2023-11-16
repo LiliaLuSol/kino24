@@ -31,7 +31,7 @@
 
 Экран профиля
 
-![image](https://github.com/LiliaLuSol/kino24/assets/116663842/ea813e31-4014-47dd-be07-bcc81a7e81a4)
+![image](https://github.com/LiliaLuSol/kino24/assets/116663842/dfb99db7-0506-43db-a2cc-a6c3629af506)
 
 
 Экран с билетами пользователей 
@@ -46,21 +46,20 @@
 
 Экран выбора даты, времени сеанса и места
 
-![Screenshot_2023-11-15-22-33-30-954_com example kino24](https://github.com/LiliaLuSol/kino24/assets/116663842/768dd7e5-a7f0-4e5a-b81f-f22d2eab0429)
+![image](https://github.com/LiliaLuSol/kino24/assets/116663842/c8ec79d6-c9d3-4575-bdcd-266467d09de3)
 
 
 Экран с выбором еды
 
-![Screenshot_2023-11-15-22-34-14-723_com example kino24](https://github.com/LiliaLuSol/kino24/assets/116663842/d16a579f-ef98-4983-8684-bbe3fc6e26c1)
+![image](https://github.com/LiliaLuSol/kino24/assets/116663842/8dd2bd6e-5d22-45fb-8492-edc914e14372)
 
 
 Экран с итогами выбора 
 
-![Screenshot_2023-11-15-22-35-37-581_com example kino24](https://github.com/LiliaLuSol/kino24/assets/116663842/3a113be0-e526-4a57-8b96-e739ed1f671b)
+![image](https://github.com/LiliaLuSol/kino24/assets/116663842/9342bfed-07a3-4d97-85b2-b5d9f6afba7a)
 
 
 Экран оплаты
 
-![Screenshot_2023-11-15-22-35-49-358_com example kino24](https://github.com/LiliaLuSol/kino24/assets/116663842/0f3175ee-cb19-45a7-a6c6-24d6714ef9d2)
-
+![image](https://github.com/LiliaLuSol/kino24/assets/116663842/d7ed555b-74f3-4ccf-a45c-9fbf08b6bdcd)
 
