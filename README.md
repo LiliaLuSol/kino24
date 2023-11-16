@@ -56,7 +56,7 @@
 
 Экран с итогами выбора 
 
-![image](https://github.com/LiliaLuSol/kino24/assets/116663842/9342bfed-07a3-4d97-85b2-b5d9f6afba7a)
+![image](https://github.com/LiliaLuSol/kino24/assets/116663842/277a92a2-a925-4079-901d-3c8123db2ac5)
 
 
 Экран оплаты
