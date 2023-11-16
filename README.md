@@ -31,7 +31,7 @@
 
 Экран профиля
 
-![Screenshot_2023-11-15-22-32-14-494_com example kino24](https://github.com/LiliaLuSol/kino24/assets/116663842/ea813e31-4014-47dd-be07-bcc81a7e81a4)
+![image](https://github.com/LiliaLuSol/kino24/assets/116663842/ea813e31-4014-47dd-be07-bcc81a7e81a4)
 
 
 Экран с билетами пользователей 
