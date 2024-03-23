@@ -15,9 +15,9 @@ void main() async {
   await initializeDateFormatting('ru', null);
   await PrefUtils().init();
   await Supabase.initialize(
-    url: 'https://wapchyqqghlrtcvsrayd.supabase.co',
+    url: 'https://url.supabase.co',
     anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhcGNoeXFxZ2hscnRjdnNyYXlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTgyMTk5MTQsImV4cCI6MjAxMzc5NTkxNH0.76D6D-Kzc5B5u9_FO-WdW2cXIaJjyEdiXA8jI-b37Bo',
+        'anonKey',
     authFlowType: AuthFlowType.pkce,
     debug: false,
   );
